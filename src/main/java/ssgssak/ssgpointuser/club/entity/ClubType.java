@@ -5,6 +5,6 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public enum Gender {
-    MALE, FEMALE
+public enum ClubType {
+    MOM, CAR, BIZ, BEAUTY
 }

@@ -29,7 +29,8 @@ public class MomClub {
     private LocalDate child2Birth;
     @Column(nullable = false)
     private Boolean agreement;
-    // todo: add foreign key(clubListId)
-    @Column(nullable = false)
-    private Long clubListId;
+    // todo: fetch = FetchType.LAZY 쓰는 것이 맞는지 확인
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_list_id")
+    private ClubList clubList;
 }
