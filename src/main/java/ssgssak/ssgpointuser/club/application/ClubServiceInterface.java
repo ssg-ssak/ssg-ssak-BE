@@ -10,7 +10,7 @@ public interface ClubServiceInterface {
     /*
     맘키즈 클럽 서비스 관련 메서드입니다.
      */
-    void createMomClubUser(MomClubUpdateDto momClubUpdateDto);
+    void createMomClubUser(MomClubUpdateDto momClubSignUpDto);
     void updateMomClubUser(MomClubUpdateDto momClubUpdateDto);
     void deleteMomClubUser(String ClubListId);
     /*
