@@ -26,7 +26,6 @@ public class ClubList {
     // todo: @JoinColumn(name = user_id) 사용하지 않아도 되는지 확인
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-    // todo: fetch = FetchType.LAZY 쓰는 것이 맞는지 확인
     @OneToOne(mappedBy = "clubList", fetch = FetchType.LAZY)
     private MomClub momClub;
     @OneToOne(mappedBy = "clubList", fetch = FetchType.LAZY)

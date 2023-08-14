@@ -21,12 +21,10 @@ public class CarClub {
     private String middleNumber;
     @Column(nullable = false, length = 10, name = "last_number")
     private String lastNumber;
-    // todo: columnDefinition 사용할지 말지 좀 더 고민해보기.
     @Column(nullable = false, name = "agree_essential", columnDefinition = "boolean default false")
     private Boolean agreeEssential;
     @Column(nullable = false, name = "agree_select", columnDefinition = "boolean default false")
     private Boolean agreeSelect;
-    // todo: fetch = FetchType.LAZY 쓰는 것이 맞는지 확인
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_list_id")
     private ClubList clubList;

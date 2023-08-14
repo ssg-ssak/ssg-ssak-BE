@@ -7,7 +7,6 @@ import ssgssak.ssgpointuser.club.entity.Region;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @ToString
 public class CarClubUpdateDto {
     private Region region;
