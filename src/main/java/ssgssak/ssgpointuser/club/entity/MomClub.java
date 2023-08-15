@@ -17,19 +17,18 @@ public class MomClub {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "child_1_gender")
     @Enumerated(EnumType.STRING)
     private Gender child1Gender;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "child_1_birth")
     private LocalDate child1Birth;
-    @Column
+    @Column(name = "child_2_gender")
     @Enumerated(EnumType.STRING)
     private Gender child2Gender;
-    @Column
+    @Column(name = "child_2_birth")
     private LocalDate child2Birth;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "agreement", columnDefinition = "boolean default false")
     private Boolean agreement;
-    // todo: fetch = FetchType.LAZY 쓰는 것이 맞는지 확인
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_list_id")
     private ClubList clubList;
