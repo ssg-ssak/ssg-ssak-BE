@@ -5,10 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.el.stream.Stream;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -40,9 +45,20 @@ public class User {
     private LocalDateTime updateDate;
     @Column(length = 100)
     private String pointPassword;
-    @Column(unique = true, nullable = false, length = 20)
+    @Column(unique = true, nullable = false, length = 16)
     private String barcodeNumber;
     @Column
     private LocalDateTime softDelete;
+
+
+
+    /**
+     * 회원가입시 UUID 적용
+     */
+    @PrePersist
+    private void initializeFields(){
+        String newUUID = UUID.randomUUID().toString();
+        this.userUUID = newUUID;
+    }
 
 }
