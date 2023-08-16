@@ -3,11 +3,16 @@ package ssgssak.ssgpointuser.user.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ssgssak.ssgpointuser.user.dto.UserUpdateInfoDto;
+import ssgssak.ssgpointuser.user.dto.UserUpdatePointPwDto;
 import ssgssak.ssgpointuser.user.dto.UserUpdatePwDto;
 import ssgssak.ssgpointuser.user.entity.User;
 import ssgssak.ssgpointuser.user.infrastructure.UserRepository;
 import ssgssak.ssgpointuser.user.vo.UserUpdateInfoInVo;
+import ssgssak.ssgpointuser.user.vo.UserUpdatePointPwInVo;
 import ssgssak.ssgpointuser.user.vo.UserUpdatePwInVo;
+import ssgssak.ssgpointuser.user.entity.User;
+import ssgssak.ssgpointuser.user.infrastructure.UserRepository;
+import ssgssak.ssgpointuser.user.vo.UserUpdateInfoInVo;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -48,6 +53,22 @@ public class UserConverterImpl implements UserConverter{
         User user = getUserByUUID(updatePwDto.getUuid());
         return user.toBuilder()
                 .userPassword(updatePwDto.getPassword())
+                .build();
+    }
+
+    @Override
+    public UserUpdatePointPwDto updatePointPwVoToDto(UserUpdatePointPwInVo userUpdatePointPwInVo, String UUID) {
+        return UserUpdatePointPwDto.builder()
+                .uuid(UUID)
+                .pointPassword(userUpdatePointPwInVo.getPointPassword())
+                .build();
+    }
+
+    @Override
+    public User updatePointPwDtoToUser(UserUpdatePointPwDto updatePointPwDto) {
+        User user = getUserByUUID(updatePointPwDto.getUuid());
+        return user.toBuilder()
+                .pointPassword(updatePointPwDto.getPointPassword())
                 .build();
     }
 
