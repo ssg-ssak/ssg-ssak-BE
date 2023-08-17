@@ -68,7 +68,6 @@ public class UserConverterImpl implements UserConverter{
                 .build();
     }
 
-
     /**
      * 유저를 UUID로 검색
      */
