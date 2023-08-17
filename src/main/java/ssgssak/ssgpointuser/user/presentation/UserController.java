@@ -9,6 +9,9 @@ import ssgssak.ssgpointuser.user.application.UserConverter;
 import ssgssak.ssgpointuser.user.application.UserServiceImpl;
 import ssgssak.ssgpointuser.user.dto.UserUpdateInfoDto;
 import ssgssak.ssgpointuser.user.vo.UserUpdateInfoInVo;
+import ssgssak.ssgpointuser.user.dto.UserUpdatePwDto;
+import ssgssak.ssgpointuser.user.vo.UserUpdateInfoInVo;
+import ssgssak.ssgpointuser.user.vo.UserUpdatePwInVo;
 
 import java.time.LocalDateTime;
 
@@ -29,5 +32,13 @@ public class UserController {
         userService.updateUserInfo(updateInfoDto);
     }
 
+    /**
+     * 비밀번호 변경하기
+     */
+    @PutMapping("/password")
+    public void modifyUserPassword(@RequestBody UserUpdatePwInVo userUpdatePwInVo) {
+        UserUpdatePwDto updatePwDto = userConverter.updatePwVoToDto(userUpdatePwInVo, userUpdatePwInVo.getUuid());
+        userService.updateUserPw(updatePwDto);
+    }
 
 }

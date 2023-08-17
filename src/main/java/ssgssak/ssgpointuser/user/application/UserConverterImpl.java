@@ -6,6 +6,11 @@ import ssgssak.ssgpointuser.user.dto.UserUpdateInfoDto;
 import ssgssak.ssgpointuser.user.entity.User;
 import ssgssak.ssgpointuser.user.infrastructure.UserRepository;
 import ssgssak.ssgpointuser.user.vo.UserUpdateInfoInVo;
+import ssgssak.ssgpointuser.user.dto.UserUpdatePwDto;
+import ssgssak.ssgpointuser.user.entity.User;
+import ssgssak.ssgpointuser.user.infrastructure.UserRepository;
+import ssgssak.ssgpointuser.user.vo.UserUpdateInfoInVo;
+import ssgssak.ssgpointuser.user.vo.UserUpdatePwInVo;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -30,6 +35,22 @@ public class UserConverterImpl implements UserConverter{
         return user.toBuilder()
                 .address(updateInfoDto.getAddress())
                 .email(updateInfoDto.getEmail())
+                .build();
+    }
+
+    @Override
+    public UserUpdatePwDto updatePwVoToDto(UserUpdatePwInVo userUpdatePwInVo, String uuid) {
+        return UserUpdatePwDto.builder()
+                .uuid(uuid)
+                .password(userUpdatePwInVo.getPassword())
+                .build();
+    }
+
+    @Override
+    public User updatePwDtoToUser(UserUpdatePwDto updatePwDto) {
+        User user = getUserByUUID(updatePwDto.getUuid());
+        return user.toBuilder()
+                .userPassword(updatePwDto.getPassword())
                 .build();
     }
 

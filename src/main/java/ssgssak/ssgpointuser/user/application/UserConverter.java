@@ -3,6 +3,12 @@ package ssgssak.ssgpointuser.user.application;
 import ssgssak.ssgpointuser.user.dto.UserUpdateInfoDto;
 import ssgssak.ssgpointuser.user.entity.User;
 import ssgssak.ssgpointuser.user.vo.UserUpdateInfoInVo;
+import lombok.NonNull;
+import ssgssak.ssgpointuser.user.dto.UserUpdateInfoDto;
+import ssgssak.ssgpointuser.user.dto.UserUpdatePwDto;
+import ssgssak.ssgpointuser.user.entity.User;
+import ssgssak.ssgpointuser.user.vo.UserUpdateInfoInVo;
+import ssgssak.ssgpointuser.user.vo.UserUpdatePwInVo;
 
 public interface UserConverter {
 
@@ -10,4 +16,7 @@ public interface UserConverter {
 
     User updateInfoDtoToUser(UserUpdateInfoDto updateInfoDto);
 
+    UserUpdatePwDto updatePwVoToDto(UserUpdatePwInVo userUpdatePwInVo, String uuid);
+
+    User updatePwDtoToUser(UserUpdatePwDto updatePwDto);
 }

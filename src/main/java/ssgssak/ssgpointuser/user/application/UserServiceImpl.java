@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssgssak.ssgpointuser.user.dto.UserUpdateInfoDto;
+import ssgssak.ssgpointuser.user.dto.UserUpdatePwDto;
 import ssgssak.ssgpointuser.user.entity.User;
 import ssgssak.ssgpointuser.user.infrastructure.UserRepository;
 
@@ -22,6 +23,12 @@ public class UserServiceImpl implements UserService{
     @Override
     public void updateUserInfo(UserUpdateInfoDto updateInfoDto) {
         User updateUser = userConverter.updateInfoDtoToUser(updateInfoDto);
+        userRepository.save(updateUser);
+    }
+
+    @Override
+    public void updateUserPw(UserUpdatePwDto updatePwDto) {
+        User updateUser = userConverter.updatePwDtoToUser(updatePwDto);
         userRepository.save(updateUser);
     }
 
