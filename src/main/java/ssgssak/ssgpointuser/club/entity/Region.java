@@ -1,5 +1,0 @@
-package ssgssak.ssgpointuser.club.entity;
-
-public enum Region {
-    SEOUL, BUSAN, GYEONGGI, GANGWON, CHUNGBUK, CHUNGNAM, JEONBUK, JEONNAM, GYEONGBUK, GYEONGNAM, JEJU, DAEGU, INCHEON, GWANGJU, DAEJEON
-}
