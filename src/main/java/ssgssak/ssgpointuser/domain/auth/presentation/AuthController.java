@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 import ssgssak.ssgpointuser.domain.auth.application.AuthServiceImpl;
+import ssgssak.ssgpointuser.domain.auth.dto.AuthDeactivateSignUpDto;
 import ssgssak.ssgpointuser.domain.auth.dto.AuthSignUpDto;
+import ssgssak.ssgpointuser.domain.auth.vo.AuthDeactivateSignUpVo;
 import ssgssak.ssgpointuser.domain.auth.vo.AuthSignUpVo;
 
 @RestController
@@ -27,13 +29,13 @@ public class AuthController {
         authService.signUp(authSignUpDto);
     }
 
-//    /**
-//     * 회원 탈퇴
-//     */
-//    @PutMapping("/auth/deactivate-account")
-//    public void deactivateAccount(@RequestBody AuthDeactivateSignUpVo deactivateVo) {
-//        AuthDeactivateSignUpDto deactivateDto = modelMapper.map(deactivateVo, AuthDeactivateSignUpDto.class);
-//        authService.deactivateAccount(deactivateDto,deactivateVo.getUserUUID());
-//    }
+    /**
+     * 회원 탈퇴
+     */
+    @PutMapping("/deactivate-account")
+    public void deactivateAccount(@RequestBody AuthDeactivateSignUpVo deactivateVo) {
+        AuthDeactivateSignUpDto deactivateDto = modelMapper.map(deactivateVo, AuthDeactivateSignUpDto.class);
+        authService.deactivateAccount(deactivateDto,deactivateVo.getUserUUID());
+    }
 
 }

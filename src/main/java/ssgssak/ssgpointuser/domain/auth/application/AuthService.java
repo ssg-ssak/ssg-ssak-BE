@@ -1,6 +1,8 @@
 package ssgssak.ssgpointuser.domain.auth.application;
 
+import ssgssak.ssgpointuser.domain.auth.dto.AuthDeactivateSignUpDto;
 import ssgssak.ssgpointuser.domain.auth.dto.AuthSignUpDto;
+import ssgssak.ssgpointuser.domain.user.entity.User;
 
 public interface AuthService {
 
@@ -14,7 +16,9 @@ public interface AuthService {
 
     boolean checkUuidDuplicate(String UUID);
 
-//    void deactivateAccount(AuthDeactivateSignUpDto deactivateDto, String uuid);
-//
-//    boolean validateUserPassword(String userPassword, String uuid);
+    void deactivateAccount(AuthDeactivateSignUpDto deactivateDto, String uuid);
+
+    boolean validateUserPassword(String userPassword, String uuid);
+
+    User getUserByUUID(String uuid);
 }
