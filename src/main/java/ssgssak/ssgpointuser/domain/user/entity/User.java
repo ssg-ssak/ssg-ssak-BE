@@ -67,8 +67,8 @@ public class User {
         this.pointPassword = pointPassword;
     }
 
-//    // 4. 회원 탈퇴
-//    public void deactivateAccount(LocalDateTime softDelete){
-//        this.softDelete = softDelete;
-//    }
+    // 4. 회원 탈퇴
+    public void deactivateAccount(LocalDateTime softDelete){
+        this.softDelete = softDelete;
+    }
 }

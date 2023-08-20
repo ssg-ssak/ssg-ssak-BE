@@ -1,13 +1,10 @@
 package ssgssak.ssgpointuser.domain.auth.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.*;
 
 @Builder
 @AllArgsConstructor
-@NonNull
+@NoArgsConstructor
 @Getter
 public class AuthDeactivateSignUpDto {
     String userPassword;
