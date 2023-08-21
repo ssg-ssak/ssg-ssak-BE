@@ -3,6 +3,7 @@ package ssgssak.ssgpointuser.domain.point.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ssgssak.ssgpointuser.domain.user.entity.User;
 import ssgssak.ssgpointuser.global.common.entity.BaseTimeEntity;
@@ -11,6 +12,8 @@ import ssgssak.ssgpointuser.global.common.entity.BaseTimeEntity;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Table
 public class Point extends BaseTimeEntity {
 
     @Id
@@ -24,7 +27,7 @@ public class Point extends BaseTimeEntity {
     private Integer updatePoint;
 
     @Column(nullable = false)
-    private boolean used;
+    private Boolean used;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING) //todo: 시간되면 @converter 사용해볼것

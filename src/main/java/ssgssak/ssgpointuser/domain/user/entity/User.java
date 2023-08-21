@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Table
 public class User extends BaseTimeEntity {
     // entity에 unique를 할 필요가 없음. 어차피 중복 검사해서 들어오는 값
     // DDD관점에서는 비즈니스 로직을 엔티티에 작성해도 괜찮음, 고려해볼것
