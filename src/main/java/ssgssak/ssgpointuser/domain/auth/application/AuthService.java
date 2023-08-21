@@ -10,7 +10,7 @@ public interface AuthService {
 
     boolean checkBarcodeNumberDuplicate(String barcodeNumber);
 
-    String generateBarcodeNumber();
+    String generateBarcodeNumber(String id);
 
     String generateUUID();
 

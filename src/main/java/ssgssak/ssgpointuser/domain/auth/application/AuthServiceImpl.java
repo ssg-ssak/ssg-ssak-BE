@@ -25,7 +25,6 @@ public class AuthServiceImpl implements AuthService {
      * 회원가입
      */
     public void signUp(AuthSignUpDto authSignUpDto) {
-        String newBarcode = generateBarcodeNumber();
         String newUUID = generateUUID();
         User newUser = User.builder()
                 .userId(authSignUpDto.getUserId())
@@ -35,24 +34,35 @@ public class AuthServiceImpl implements AuthService {
                 .email(authSignUpDto.getEmail())
                 .address(authSignUpDto.getAddress())
                 .phoneNumber(authSignUpDto.getPhoneNumber())
-                .barcodeNumber(newBarcode)
+                .barcodeNumber("init")
                 .build();
+        log.info("id : " + newUser.getId());
+        userRepository.save(newUser);
+        String id = userRepository.findUserByUserUUID(newUUID).get().getId().toString();
+        String newBarcode = generateBarcodeNumber(id);
+        newUser.setNewBarcodeNumber(newBarcode);
+        log.info("barcode : " + newBarcode);
         userRepository.save(newUser);
     }
 
     /**
      * 바코드 넘버 생성
      */
-    public String generateBarcodeNumber() {
+    public String generateBarcodeNumber(String id) {
         Random random = new Random();
-        String number;
+        int length = id.length();
+        String uniqueIdentifier;
         do {
-            number = random.ints(0,10)
-                    .limit(16)
-                    .mapToObj(Integer::toString)
-                    .collect(Collectors.joining());
-        } while (checkBarcodeNumberDuplicate(number));
-        return number;
+        uniqueIdentifier =
+                id.substring(0, length / 2)
+                + random.ints(0, 10)
+                        .limit(10-length)
+                        .mapToObj(Integer::toString)
+                        .collect(Collectors.joining())
+                + id.substring(length / 2, length);
+        log.info("고유식별자 :" + uniqueIdentifier);
+        } while (checkBarcodeNumberDuplicate(uniqueIdentifier));
+        return "935012" + uniqueIdentifier;
     }
 
     /**
