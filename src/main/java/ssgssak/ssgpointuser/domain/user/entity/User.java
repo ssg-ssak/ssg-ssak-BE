@@ -51,6 +51,7 @@ public class User extends BaseTimeEntity {
      * 2. 비밀번호 변경 : userPassword 변경
      * 3. 포인트pw 변경 : pointPassword 변경
      * 4. 회원탈퇴 : softDelete 추가
+     * 5. 바코드 설정
      */
 
     // 1. 회원정보 수정
@@ -72,5 +73,10 @@ public class User extends BaseTimeEntity {
     // 4. 회원 탈퇴
     public void deactivateAccount(LocalDateTime softDelete){
         this.softDelete = softDelete;
+    }
+
+    // 5. 바코드 설정
+    public void setNewBarcodeNumber(String barcodeNumber) {
+        this.barcodeNumber = barcodeNumber;
     }
 }
