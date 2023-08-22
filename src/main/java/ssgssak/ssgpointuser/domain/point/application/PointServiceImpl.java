@@ -34,8 +34,8 @@ public class PointServiceImpl implements PointService {
      * 4. 가맹점(스토어)로 적립
      * 5. 제휴사(파트너)로 적립
      * 6. 포인트 선물하기
-     * 7. 포인트 선물받기
-     * 8. 포인트 선물 대기리스트 조회
+     * 7. 포인트 선물받기 //todo: 거절한 포인트 선물은, 포인트 조회에 나오지 않음
+     * 8. 포인트 선물 대기리스트 조회 //todo: 포인트 대기 15일 이후에는 자동 거절 되어야함
      */
 
     // 1. 유저 조회
@@ -157,11 +157,12 @@ public class PointServiceImpl implements PointService {
 
             // 선물포인트 수정
             giftPoint.setGiveAndReceivePointId(givePointId, receivePointId);
+            giftPoint.updateStatus(GiftStatus.ACCEPT);
 
 
         // 선물받기를 거절한 경우
         } else if (responseDto.getResponse() == GiftStatus.REFUSE) {
-            giftPoint.updateStatus(GiftStatus.ACCEPT);
+            giftPoint.updateStatus(GiftStatus.REFUSE);
         }
         giftPointRepository.save(giftPoint);
     }
