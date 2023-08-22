@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserPhoneSearchDto {
-    private String phoneNumber;
     private String userName;
     private String userId;
     private String receiverUUID;
