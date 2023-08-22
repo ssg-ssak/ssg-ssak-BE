@@ -25,8 +25,8 @@ public class PointServiceImpl implements PointService {
      * 1. 유저 조회
      * 2. 유저 기존 totalPoint 조회
      * 3. 포인트 사용/적립 계산
-     * 3. 가맹점(스토어)로 적립
-     * 4. 제휴사(파트너)로 적립
+     * 4. 가맹점(스토어)로 적립
+     * 5. 제휴사(파트너)로 적립
      */
 
     // 1. 유저 조회
@@ -40,7 +40,7 @@ public class PointServiceImpl implements PointService {
     // 2. 유저 기존 totalPoint 조회
     @Override
     public Integer getTotalPoint(String uuid) {
-        Optional<Point> point = pointRepository.findFirstByUser_UserUUIDOrderByCreateAtDesc(uuid);
+        Optional<Point> point = pointRepository.findFirstByUserUUIDOrderByCreateAtDesc(uuid);
         if (point.isPresent()) {
             return point.get().getTotalPoint();
         } else {
@@ -59,10 +59,9 @@ public class PointServiceImpl implements PointService {
         return totalPoint;
     }
 
-    // 3. 가맹점(스토어)로 적립
+    // 4. 가맹점(스토어)로 적립
     @Override
     public void pointAddStore(PointAddStoreDto storeDto, String uuid) {
-        User user = getUser(uuid);
         Boolean used = storeDto.getUsed();
         Integer updatePoint = storeDto.getUpdatePoint();
         // 포인트 계산
@@ -72,16 +71,15 @@ public class PointServiceImpl implements PointService {
                 .updatePoint(updatePoint)
                 .used(used)
                 .type(PointType.STORE)
-                .user(user)
+                .userUUID(uuid)
                 .totalPoint(updateTotalPoint)
                 .build();
         pointRepository.save(point);
     }
 
-    // 4. 제휴사(파트너)로 적립
+    // 5. 제휴사(파트너)로 적립
     @Override
     public void pointAddPartner(PointAddPartnerDto partnerDto, String uuid) {
-        User user = getUser(uuid);
         Boolean used = partnerDto.getUsed();
         Integer updatePoint = partnerDto.getUpdatePoint();
         // 포인트 계산
@@ -91,7 +89,7 @@ public class PointServiceImpl implements PointService {
                 .updatePoint(updatePoint)
                 .used(used)
                 .type(PointType.PARTNER)
-                .user(user)
+                .userUUID(uuid)
                 .totalPoint(updateTotalPoint)
                 .build();
         pointRepository.save(point);

@@ -11,8 +11,9 @@ public interface PointService {
      * 포인트
      * 1. 유저 조회
      * 2. 유저 기존 totalPoint 조회
-     * 3. 가맹점(스토어)로 적립
-     * 4. 제휴사(파트너)로 적립
+     * 3. 포인트 사용/적립 계산
+     * 4. 가맹점(스토어)로 적립
+     * 5. 제휴사(파트너)로 적립
      */
 
     User getUser(String uuid);
