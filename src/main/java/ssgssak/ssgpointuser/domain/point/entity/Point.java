@@ -33,8 +33,8 @@ public class Point extends BaseTimeEntity {
     @Enumerated(EnumType.STRING) //todo: 시간되면 @converter 사용해볼것
     private PointType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    @Column(nullable = false)
+    private String userUUID;
 
 
 }
