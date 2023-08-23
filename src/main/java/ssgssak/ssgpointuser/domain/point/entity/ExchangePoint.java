@@ -18,6 +18,7 @@ public class ExchangePoint {
     private Long id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ExchangeType type;
 
     @Column(nullable = false)

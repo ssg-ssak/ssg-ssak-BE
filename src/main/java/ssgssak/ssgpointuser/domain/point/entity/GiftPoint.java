@@ -34,6 +34,7 @@ public class GiftPoint extends BaseTimeEntity {
     private Long receivePointId;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private GiftStatus status;
 
     @Column(nullable = false)
