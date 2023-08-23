@@ -11,7 +11,10 @@ public interface PointService {
      * 3. 포인트 사용/적립 계산
      * 4. 가맹점(스토어)로 적립
      * 5. 제휴사(파트너)로 적립
-     * 6. 포인트 선물하기/받기
+     * 6. 포인트 선물하기
+     * 7. 포인트 선물받기
+     * 8. 포인트 선물 대기리스트 조회
+     * 9. 포인트 전환하기
      */
 
     User getUser(String uuid);
@@ -32,4 +35,7 @@ public interface PointService {
 
     // 8. 포인트 선물 대기 리스트 조회
     PointGiftWaitListDto getGiftWaitList(String uuid);
+
+    // 9. 포인트 전환하기
+    void pointExchange(PointExchangeDto exchangeDto, String uuid);
 }
