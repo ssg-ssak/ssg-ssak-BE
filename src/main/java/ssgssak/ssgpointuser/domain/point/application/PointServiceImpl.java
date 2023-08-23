@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ssgssak.ssgpointuser.domain.point.dto.*;
-import ssgssak.ssgpointuser.domain.point.entity.GiftPoint;
-import ssgssak.ssgpointuser.domain.point.entity.GiftStatus;
-import ssgssak.ssgpointuser.domain.point.entity.Point;
-import ssgssak.ssgpointuser.domain.point.entity.PointType;
+import ssgssak.ssgpointuser.domain.point.entity.*;
+import ssgssak.ssgpointuser.domain.point.infrastructure.ExchangePointRepository;
 import ssgssak.ssgpointuser.domain.point.infrastructure.GiftPointRepository;
 import ssgssak.ssgpointuser.domain.point.infrastructure.PointRepository;
 import ssgssak.ssgpointuser.domain.user.entity.User;
@@ -24,6 +22,7 @@ public class PointServiceImpl implements PointService {
     private final PointRepository pointRepository;
     private final UserRepository userRepository;
     private final GiftPointRepository giftPointRepository;
+    private final ExchangePointRepository exchangePointRepository;
 
 
     /**
@@ -36,6 +35,7 @@ public class PointServiceImpl implements PointService {
      * 6. 포인트 선물하기
      * 7. 포인트 선물받기 //todo: 거절한 포인트 선물은, 포인트 조회에 나오지 않음
      * 8. 포인트 선물 대기리스트 조회 //todo: 포인트 대기 15일 이후에는 자동 거절 되어야함
+     * 9. 포인트 전환하기
      */
 
     // 1. 유저 조회
@@ -176,5 +176,33 @@ public class PointServiceImpl implements PointService {
                 .waitList(waitList)
                 .build();
         return waitListDto;
+    }
+
+    // 9. 포인트 전환하기
+    @Override
+    public void pointExchange(PointExchangeDto exchangeDto, String uuid) {
+        Boolean used = exchangeDto.getUsed();
+        Integer exchangePoint = exchangeDto.getExchangePoint();
+        // 포인트 계산
+        Integer totalPoint = getTotalPoint(uuid);
+        Integer updateTotalPoint = calcTotalPoint(used, totalPoint, exchangePoint);
+
+        // 포인트 생성
+        Point point = Point.builder()
+                .totalPoint(updateTotalPoint)
+                .updatePoint(exchangePoint)
+                .used(used)
+                .type(PointType.EXCHANGE)
+                .userUUID(uuid)
+                .build();
+        pointRepository.save(point);
+        Long pointId = point.getId();
+
+        // 전환 포인트 생성
+        ExchangePoint exPoint = ExchangePoint.builder()
+                .type(exchangeDto.getType())
+                .pointId(pointId)
+                .build();
+        exchangePointRepository.save(exPoint);
     }
 }
