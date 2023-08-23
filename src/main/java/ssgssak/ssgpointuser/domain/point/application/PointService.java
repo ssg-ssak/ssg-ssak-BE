@@ -1,7 +1,10 @@
 package ssgssak.ssgpointuser.domain.point.application;
 
 import ssgssak.ssgpointuser.domain.point.dto.*;
+import ssgssak.ssgpointuser.domain.point.entity.PointType;
 import ssgssak.ssgpointuser.domain.user.entity.User;
+
+import java.time.LocalDateTime;
 
 public interface PointService {
     /**
@@ -15,6 +18,7 @@ public interface PointService {
      * 7. 포인트 선물받기
      * 8. 포인트 선물 대기리스트 조회
      * 9. 포인트 전환하기
+     * 10. 포인트 조회하기
      */
 
     User getUser(String uuid);
@@ -38,4 +42,17 @@ public interface PointService {
 
     // 9. 포인트 전환하기
     void pointExchange(PointExchangeDto exchangeDto, String uuid);
+
+    // 10. 포인트 조회하기
+    PointListResponseDto pointSearch(PointType type,
+                                     Boolean used,
+                                     String startDay,
+                                     String endDay,
+                                     String uuid);
+
+    // 11. 날짜 변환
+    LocalDateTime changeDate(String date);
+
+    // 12. 사용가능 포인트 조회
+    PointPossibleResponseDto searchPossible(String uuid);
 }
