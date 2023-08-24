@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssgssak.ssgpointuser.domain.point.application.PointServiceImpl;
 import ssgssak.ssgpointuser.domain.point.dto.*;
+import ssgssak.ssgpointuser.domain.point.entity.PointType;
 import ssgssak.ssgpointuser.domain.point.vo.*;
 
 @RestController
@@ -28,6 +29,8 @@ public class PointController {
      * 4. 포인트 선물받기
      * 5. 포인트 선물 대기리스트 조회
      * 6. 포인트 전환하기
+     * 7. 포인트 기간별로 조회하기
+     * 8. 사용가능 포인트 조회
      */
 
 
@@ -73,5 +76,25 @@ public class PointController {
     public void exchangePoint(@RequestBody PointExchangeInVo pointExchangeInVo) {
         PointExchangeDto exchangeDto = modelMapper.map(pointExchangeInVo, PointExchangeDto.class);
         pointService.pointExchange(exchangeDto, pointExchangeInVo.getUuid());
+    }
+
+    // 7. 포인트 기간별로 조회하기
+    @GetMapping("/list")
+    public ResponseEntity<PointListOutVo> searchPointList(@RequestParam(value = "type", required = false) PointType type,
+                                                          @RequestParam(value = "used", required = false) Boolean used,
+                                                          @RequestParam String startDay,
+                                                          @RequestParam String endDay,
+                                                          @RequestParam String uuid) {
+        PointListResponseDto responseDto = pointService.pointSearch(type,used,startDay,endDay,uuid);
+        PointListOutVo outVo = modelMapper.map(responseDto, PointListOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
+    }
+
+    // 8. 사용 가능 포인트 조회
+    @GetMapping("/possible")
+    public ResponseEntity<PointPossibleOutVo> searchPossiblePoint(@RequestParam String uuid) {
+        PointPossibleResponseDto responseDto = pointService.searchPossible(uuid);
+        PointPossibleOutVo outVo = modelMapper.map(responseDto, PointPossibleOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 }

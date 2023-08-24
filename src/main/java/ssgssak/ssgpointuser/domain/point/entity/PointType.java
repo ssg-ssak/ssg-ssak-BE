@@ -10,5 +10,6 @@ public enum PointType {
     ATTENDANCE,
     ROULETTE,
     PARTNER,
-    EVENT
+    EVENT,
+    GENERAL
 }
