@@ -12,5 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PointListOutVo {
+    private Integer addTotalPoint;
+    private Integer usedTotalPoint;
+    private Integer totalRows;
     private List pointList;
 }
