@@ -1,10 +1,13 @@
 package ssgssak.ssgpointuser.domain.point.application;
 
 import ssgssak.ssgpointuser.domain.point.dto.*;
+import ssgssak.ssgpointuser.domain.point.entity.Point;
 import ssgssak.ssgpointuser.domain.point.entity.PointType;
 import ssgssak.ssgpointuser.domain.user.entity.User;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
 
 public interface PointService {
     /**
@@ -55,4 +58,7 @@ public interface PointService {
 
     // 12. 사용가능 포인트 조회
     PointPossibleResponseDto searchPossible(String uuid);
+
+    // 13. 기간별 적립한/사용한 포인트 계산
+    HashMap<String, Integer> calcAddUsedPoint(List<Point> pointList);
 }

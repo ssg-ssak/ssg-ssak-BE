@@ -12,6 +12,7 @@ import ssgssak.ssgpointuser.domain.user.entity.User;
 import ssgssak.ssgpointuser.domain.user.infrastructure.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -252,8 +253,13 @@ public class PointServiceImpl implements PointService {
                 pointList = pointRepository.findAllByUserUUIDAndTypeAndUsedAndCreateAtBetween(uuid, type, used, sttDay, eddDay);
             }
         }
+        // 적립/사용 포인트 계산
+        HashMap<String, Integer> addUsedPointList = calcAddUsedPoint(pointList);
 
         return PointListResponseDto.builder()
+                .addTotalPoint(addUsedPointList.get("addPoint"))
+                .usedTotalPoint(addUsedPointList.get("usedPoint"))
+                .totalRows(pointList.size())
                 .pointList(pointList)
                 .build();
     }
@@ -276,5 +282,22 @@ public class PointServiceImpl implements PointService {
         return PointPossibleResponseDto.builder()
                 .possiblePoint(getTotalPoint(uuid))
                 .build();
+    }
+
+    // 13. 기간별 적립한/사용한 포인트 계산
+    @Override
+    public HashMap<String, Integer> calcAddUsedPoint(List<Point> pointList) {
+        HashMap<String, Integer> addUsedPointList = new HashMap<>();
+        Integer addPoint = pointList.stream()
+                .filter(point -> point.getUsed() == false)
+                .mapToInt(Point::getUpdatePoint)
+                .sum();
+        Integer usedPoint = pointList.stream()
+                .filter(point -> point.getUsed() == true)
+                .mapToInt(Point::getUpdatePoint)
+                .sum();
+        addUsedPointList.put("addPoint", addPoint);
+        addUsedPointList.put("usedPoint", usedPoint);
+        return addUsedPointList;
     }
 }
