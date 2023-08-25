@@ -218,39 +218,53 @@ public class PointServiceImpl implements PointService {
                                             String startDay,
                                             String endDay,
                                             String uuid) {
-        // String으로 들어온 날짜를 LocalDateTime으로 바꿈
-        LocalDateTime sttDay = changeDate(startDay);
-        LocalDateTime eddDay = changeDate(endDay);
-        List<Point> pointList;
+        List<Point> pointList = null;
 
-        // 1. 전체 조회
-        if (type == null && used == null) {
-            pointList = pointRepository.findAllByUserUUIDAndCreateAtBetween(uuid, sttDay, eddDay);
-        }
-        // 2. 전체 타입을, 선택한 사용유무로 검색
-        else if (type == null && used != null) {
-            pointList = pointRepository.findAllByUserUUIDAndUsedAndCreateAtBetween(uuid, used, sttDay, eddDay);
-        }
-        // 3. 선택한 타입을, 전체 사용유무로 검색
-        else if (type != null && used == null) {
-            // 일반 타입이라면, 이벤트를 제외하고 검색한다
-            if (type == PointType.GENERAL) {
-                pointList = pointRepository.findAllByUserUUIDAndTypeNotAndCreateAtBetween(uuid, PointType.EVENT, sttDay, eddDay);
+        // 기간이 정해져 있을 때
+        if (startDay != null && endDay != null) {
+            // String으로 들어온 날짜를 LocalDateTime으로 바꿈
+            LocalDateTime sttDay = changeDate(startDay);
+            LocalDateTime eddDay = changeDate(endDay);
+            // 1. 전체 조회
+            if (type == null && used == null) {
+                pointList = pointRepository.findAllByUserUUIDAndCreateAtBetween(uuid, sttDay, eddDay);
             }
-            // 이벤트 타입이라면, 이벤트만 검색한다
+            // 2. 전체 타입을, 선택한 사용유무로 검색
+            else if (type == null && used != null) {
+                pointList = pointRepository.findAllByUserUUIDAndUsedAndCreateAtBetween(uuid, used, sttDay, eddDay);
+            }
+            // 3. 선택한 타입을, 전체 사용유무로 검색
+            else if (type != null && used == null) {
+                // 일반 타입이라면, 이벤트를 제외하고 검색한다
+                if (type == PointType.GENERAL) {
+                    pointList = pointRepository.findAllByUserUUIDAndTypeNotAndCreateAtBetween(uuid, PointType.EVENT, sttDay, eddDay);
+                }
+                // 이벤트 타입이라면, 이벤트만 검색한다
+                else {
+                    pointList = pointRepository.findAllByUserUUIDAndTypeAndCreateAtBetween(uuid, type, sttDay, eddDay);
+                }
+            }
+            // 4. 선택한 타입과, 선택한 사용유무로 검색
             else {
-                pointList = pointRepository.findAllByUserUUIDAndTypeAndCreateAtBetween(uuid, type, sttDay, eddDay);
+                // 일반 타입이라면, 이벤트를 제외하고 검색한다
+                if (type == PointType.GENERAL) {
+                    pointList = pointRepository.findAllByUserUUIDAndTypeNotAndUsedAndCreateAtBetween(uuid, PointType.EVENT, used, sttDay, eddDay);
+                }
+                // 이벤트 타입이라면, 이벤트만 검색한다
+                else {
+                    pointList = pointRepository.findAllByUserUUIDAndTypeAndUsedAndCreateAtBetween(uuid, type, used, sttDay, eddDay);
+                }
             }
         }
-        // 4. 선택한 타입과, 선택한 사용유무로 검색
+        // 기간 없이, 전체 기간을 조회할때 -> 일단은 선물포인트만
         else {
-            // 일반 타입이라면, 이벤트를 제외하고 검색한다
-            if (type == PointType.GENERAL) {
-                pointList = pointRepository.findAllByUserUUIDAndTypeNotAndUsedAndCreateAtBetween(uuid, PointType.EVENT, used, sttDay, eddDay);
+            // 사용유무 관계없이 전체를 검색
+            if (type == PointType.GIFT && used == null) {
+                pointList = pointRepository.findAllByUserUUIDAndType(uuid, type);
             }
-            // 이벤트 타입이라면, 이벤트만 검색한다
-            else {
-                pointList = pointRepository.findAllByUserUUIDAndTypeAndUsedAndCreateAtBetween(uuid, type, used, sttDay, eddDay);
+            // 사용유무에 따라서 검색
+            else if (type == PointType.GIFT && used != null) {
+                pointList = pointRepository.findAllByUserUUIDAndTypeAndUsed(uuid, type, used);
             }
         }
         // 적립/사용 포인트 계산
