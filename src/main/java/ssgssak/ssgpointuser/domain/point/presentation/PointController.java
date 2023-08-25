@@ -80,10 +80,10 @@ public class PointController {
 
     // 7. 포인트 기간별로 조회하기
     @GetMapping("/list")
-    public ResponseEntity<PointListOutVo> searchPointList(@RequestParam(value = "type", required = false) PointType type,
-                                                          @RequestParam(value = "used", required = false) Boolean used,
-                                                          @RequestParam String startDay,
-                                                          @RequestParam String endDay,
+    public ResponseEntity<PointListOutVo> searchPointList(@RequestParam(required = false) PointType type,
+                                                          @RequestParam(required = false) Boolean used,
+                                                          @RequestParam(required = false) String startDay,
+                                                          @RequestParam(required = false) String endDay,
                                                           @RequestParam String uuid) {
         PointListResponseDto responseDto = pointService.pointSearch(type,used,startDay,endDay,uuid);
         PointListOutVo outVo = modelMapper.map(responseDto, PointListOutVo.class);

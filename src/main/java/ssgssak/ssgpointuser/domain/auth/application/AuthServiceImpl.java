@@ -2,6 +2,7 @@ package ssgssak.ssgpointuser.domain.auth.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import ssgssak.ssgpointuser.domain.auth.dto.AuthDeactivateSignUpDto;
 import ssgssak.ssgpointuser.domain.auth.dto.AuthSignUpDto;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     /**
      * 회원가입
@@ -27,21 +29,14 @@ public class AuthServiceImpl implements AuthService {
     public void signUp(AuthSignUpDto authSignUpDto) {
         String newUUID = generateUUID();
         User newUser = User.builder()
-                .userId(authSignUpDto.getUserId())
                 .userUUID(newUUID)
-                .userName(authSignUpDto.getUserName())
-                .userPassword(authSignUpDto.getUserPassword())
-                .email(authSignUpDto.getEmail())
-                .address(authSignUpDto.getAddress())
-                .phoneNumber(authSignUpDto.getPhoneNumber())
                 .barcodeNumber("init")
                 .build();
-        log.info("id : " + newUser.getId());
+        modelMapper.map(authSignUpDto,newUser);
         userRepository.save(newUser);
         String id = userRepository.findUserByUserUUID(newUUID).get().getId().toString();
         String newBarcode = generateBarcodeNumber(id);
         newUser.setNewBarcodeNumber(newBarcode);
-        log.info("barcode : " + newBarcode);
         userRepository.save(newUser);
     }
 

@@ -21,9 +21,9 @@ public class StorePoint {
     private Long pointId;
 
     @Column
-    private Long receipt_id;
+    private Long receiptId;
 
     @Column(nullable = false)
-    private Long store_id;
+    private Long storeId;
 
 }
