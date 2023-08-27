@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssgssak.ssgpointuser.domain.point.application.PointServiceImpl;
 import ssgssak.ssgpointuser.domain.point.dto.*;
-import ssgssak.ssgpointuser.domain.point.entity.PointType;
 import ssgssak.ssgpointuser.domain.point.vo.*;
 
 @RestController
@@ -25,72 +24,50 @@ public class PointController {
      * 포인트 컨트롤러
      * 1. 포인트 적립 - 스토어
      * 2. 포인트 적립 - 파트너
-     * 3. 포인트 선물하기
-     * 4. 포인트 선물받기
-     * 5. 포인트 선물 대기리스트 조회
-     * 6. 포인트 전환하기
-     * 7. 포인트 기간별로 조회하기
-     * 8. 사용가능 포인트 조회
+     * 3. 포인트 선물받기
+     * 4. 포인트 전환하기
+     * 5. 포인트 기간별로 조회하기
+     * 6. 사용가능 포인트 조회
      */
 
 
-    // 1. 포인트 적립 - 스토어
+    // 1. 포인트 적립 - 스토어 -> 진행이후 스토어포인트에 POST, "/storepoint/add"로 요청이 들어가는것까지가 한세트임
     @PostMapping("/add/store")
-    public void addPointStore(@RequestBody PointAddStoreInVo pointAddStoreInVo) {
-        PointAddStoreDto storeDto = modelMapper.map(pointAddStoreInVo, PointAddStoreDto.class);
-        pointService.pointAddStore(storeDto, pointAddStoreInVo.getUuid());
+    public void addPointStore(@RequestBody PointAddInVo addInVo) {
+        pointService.pointAddStore(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
     }
 
-    // 2. 포인트 적립 - 파트너
+    // 2. 포인트 적립 - 파트너 -> 진행이후 파트너포인트에 POST, "/partnerpoint/add"로 요청이 들어가는것까지가 한세트임
     @PostMapping("/add/partner")
-    public void addPointPartner(@RequestBody PointAddPartnerInVo pointAddPartnerInVo) {
-        PointAddPartnerDto partnerDto = modelMapper.map(pointAddPartnerInVo, PointAddPartnerDto.class);
-        pointService.pointAddPartner(partnerDto, pointAddPartnerInVo.getUuid());
+    public void addPointPartner(@RequestBody PointAddPartnerInVo addInVo){
+        pointService.pointAddPartner(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
     }
 
-
-    // 3. 포인트 선물하기
-    @PostMapping("/gift/give")
-    public void givePoint(@RequestBody PointGiftRequestInVo pointGiftRequestInVo) {
-        PointGiftRequestDto giftDto = modelMapper.map(pointGiftRequestInVo, PointGiftRequestDto.class);
-        pointService.giveGiftPoint(giftDto);
-    }
-
-    // 4. 포인트 선물받기 : receiver의 uuid와 success=false인 giftpoint를 검색하면 된다
+    // 3. 포인트 선물받기 -> 진행이후 선물포인트에 POST, "/gift/accept"로 요청이 들어가는것가지가 한세트임
     @PostMapping("/gift/receive")
-    public void receivePoint(@RequestBody PointGiftResponseInVo pointGiftResponseInVo) {
-        log.info("들어온값 : " + pointGiftResponseInVo);
-        PointGiftResponseDto responseDto = modelMapper.map(pointGiftResponseInVo, PointGiftResponseDto.class);
-        pointService.receiveGiftPoint(responseDto);
+    public ResponseEntity<PointGiftAcceptOutVo> receivePoint(@RequestBody PointGiftAcceptInVo inVo) {
+        PointGiftAcceptResponseDto responseDto = pointService.receiveGiftPoint(
+                modelMapper.map(inVo, PointGiftAcceptRequestDto.class));
+        PointGiftAcceptOutVo outVo = modelMapper.map(responseDto, PointGiftAcceptOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 
-    // 5. 포인트 선물 대기 리스트 조회
-    @GetMapping("/gift/wait-list")
-    public ResponseEntity<PointGiftWaitListDto> waitList(@RequestParam String uuid) {
-        PointGiftWaitListDto waitList = pointService.getGiftWaitList(uuid);
-        return new ResponseEntity<>(waitList, HttpStatus.OK);
-    }
-
-    // 6. 포인트 전환하기
+    // 4. 포인트 전환하기 -> 진행이후 전환포인트에 POST, "/exchangepoint/add"로 요청이 들어가는것까지가 한세트임
     @PostMapping("/exchange")
     public void exchangePoint(@RequestBody PointExchangeInVo pointExchangeInVo) {
-        PointExchangeDto exchangeDto = modelMapper.map(pointExchangeInVo, PointExchangeDto.class);
-        pointService.pointExchange(exchangeDto, pointExchangeInVo.getUuid());
+        pointService.pointExchange(modelMapper.map(pointExchangeInVo, CreatePointDto.class), pointExchangeInVo.getUuid());
     }
 
-    // 7. 포인트 기간별로 조회하기
-    @GetMapping("/list")
-    public ResponseEntity<PointListOutVo> searchPointList(@RequestParam(required = false) PointType type,
-                                                          @RequestParam(required = false) Boolean used,
-                                                          @RequestParam(required = false) String startDay,
-                                                          @RequestParam(required = false) String endDay,
-                                                          @RequestParam String uuid) {
-        PointListResponseDto responseDto = pointService.pointSearch(type,used,startDay,endDay,uuid);
+    // 5. 포인트 기간별로 조회하기
+    @GetMapping("/list") // todo: vo로 받아오기
+    public ResponseEntity<PointListOutVo> searchPointList(PointListInVo inVo) {
+        PointListRequestDto requestDto = modelMapper.map(inVo, PointListRequestDto.class);
+        PointListResponseDto responseDto = pointService.pointSearch(requestDto,inVo.getUuid());
         PointListOutVo outVo = modelMapper.map(responseDto, PointListOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 
-    // 8. 사용 가능 포인트 조회
+    // 6. 사용 가능 포인트 조회
     @GetMapping("/possible")
     public ResponseEntity<PointPossibleOutVo> searchPossiblePoint(@RequestParam String uuid) {
         PointPossibleResponseDto responseDto = pointService.searchPossible(uuid);
