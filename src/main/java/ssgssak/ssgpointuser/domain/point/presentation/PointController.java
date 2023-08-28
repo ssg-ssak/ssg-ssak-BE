@@ -28,6 +28,7 @@ public class PointController {
      * 4. 포인트 전환하기
      * 5. 포인트 기간별로 조회하기
      * 6. 사용가능 포인트 조회
+     * 7. 포인트 적립 - 이벤트
      */
 
 
@@ -42,7 +43,7 @@ public class PointController {
 
     // 2. 포인트 적립 - 파트너 -> 진행이후 파트너포인트에 POST, "/partnerpoint/add"로 요청이 들어가는것까지가 한세트임
     @PostMapping("/add/partner")
-    public ResponseEntity<PointIdOutVo> addPointPartner(@RequestBody PointAddPartnerInVo addInVo){
+    public ResponseEntity<PointIdOutVo> addPointPartner(@RequestBody PointAddPartnerInVo addInVo) {
         PointIdOutDto outDto =
                 pointService.pointAddPartner(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
         PointIdOutVo outVo = modelMapper.map(outDto, PointIdOutVo.class);
@@ -71,7 +72,7 @@ public class PointController {
     @GetMapping("/list") // todo: vo로 받아오기
     public ResponseEntity<PointListOutVo> searchPointList(PointListInVo inVo) {
         PointListRequestDto requestDto = modelMapper.map(inVo, PointListRequestDto.class);
-        PointListResponseDto responseDto = pointService.pointSearch(requestDto,inVo.getUuid());
+        PointListResponseDto responseDto = pointService.pointSearch(requestDto, inVo.getUuid());
         PointListOutVo outVo = modelMapper.map(responseDto, PointListOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
@@ -81,6 +82,15 @@ public class PointController {
     public ResponseEntity<PointPossibleOutVo> searchPossiblePoint(@RequestParam String uuid) {
         PointPossibleResponseDto responseDto = pointService.searchPossible(uuid);
         PointPossibleOutVo outVo = modelMapper.map(responseDto, PointPossibleOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
+    }
+
+    // 7. 포인트 적립 - 이벤트
+    @PostMapping("/add/event")
+    public ResponseEntity<PointIdOutVo> addPointEvent(@RequestBody PointAddInVo addInVo) {
+        PointIdOutDto outDto =
+                pointService.pointAddEvent(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
+        PointIdOutVo outVo = modelMapper.map(outDto, PointIdOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 }

@@ -34,6 +34,7 @@ public class PointServiceImpl implements PointService {
      * 8. 포인트 조회하기
      * 9. 사용가능 포인트 조회
      * 10. 기간별 적립한/사용한 포인트 계산
+     * 11. 이벤트 포인트 적립
      */
 
 
@@ -61,23 +62,20 @@ public class PointServiceImpl implements PointService {
 
     // 3. 포인트 생성
     @Override
-    public Point createPoint(CreatePointDto dto, String uuid) {
+    public Point createPoint(CreatePointDto pointDto, String uuid) {
+        Integer updateTotalPoint = calcTotalPoint(pointDto.getUsed(), getTotalPoint(uuid), pointDto.getUpdatePoint());
+        pointDto = pointDto.toBuilder().totalPoint(updateTotalPoint).build();
         Point point = Point.builder().userUUID(uuid).build();
-        modelMapper.map(dto, point);
+        modelMapper.map(pointDto, point);
         return point;
     }
 
     // 4. 가맹점(스토어)로 적립 //todo: 모든 적립 vo를 createPoint dto로 바꾸면됨
     @Override
     public PointIdOutDto pointAddStore(CreatePointDto pointDto, String uuid) {
-        log.info("토탈포인트: " + getTotalPoint(uuid));
         // 포인트 계산
-        Integer updateTotalPoint = calcTotalPoint(pointDto.getUsed(), getTotalPoint(uuid), pointDto.getUpdatePoint());
-        log.info("업데이트 토탈 포인트: " + updateTotalPoint);
-        pointDto = pointDto.toBuilder().type(PointType.STORE).totalPoint(updateTotalPoint).build();
-        log.info("최종 토탈포인트: " + pointDto.getTotalPoint());
+        pointDto = pointDto.toBuilder().type(PointType.STORE).build();
         Point point = createPoint(pointDto, uuid);
-        log.info("최종 토탈포인트: " + point.getTotalPoint());
         pointRepository.save(point);
         Long pointId = point.getId();
 
@@ -88,8 +86,7 @@ public class PointServiceImpl implements PointService {
     @Override
     public PointIdOutDto pointAddPartner(CreatePointDto pointDto, String uuid) {
         // 포인트 계산
-        Integer updateTotalPoint = calcTotalPoint(pointDto.getUsed(), getTotalPoint(uuid), pointDto.getUpdatePoint());
-        pointDto = pointDto.toBuilder().type(PointType.PARTNER).totalPoint(updateTotalPoint).build();
+        pointDto = pointDto.toBuilder().type(PointType.PARTNER).build();
         Point point = createPoint(pointDto, uuid);
         pointRepository.save(point);
         Long pointId = point.getId();
@@ -209,7 +206,7 @@ public class PointServiceImpl implements PointService {
                 .build();
     }
 
-    // 10. 사용가능 포인트 조회
+    // 9. 사용가능 포인트 조회
     @Override
     public PointPossibleResponseDto searchPossible(String uuid) {
         //todo: 일단 totalpoint를 return해주는데, 나중에 적립예정을 빼고 보내야함
@@ -218,7 +215,7 @@ public class PointServiceImpl implements PointService {
                 .build();
     }
 
-    // 11. 기간별 적립한/사용한 포인트 계산
+    // 10. 기간별 적립한/사용한 포인트 계산
     @Override
     public HashMap<String, Integer> calcAddUsedPoint(List<Point> pointList) {
         HashMap<String, Integer> addUsedPointList = new HashMap<>();
@@ -233,5 +230,16 @@ public class PointServiceImpl implements PointService {
         addUsedPointList.put("addPoint", addPoint);
         addUsedPointList.put("usedPoint", usedPoint);
         return addUsedPointList;
+    }
+
+    // 11. 이벤트 포인트 적립
+    public PointIdOutDto pointAddEvent(CreatePointDto pointDto, String uuid) {
+        // 포인트 계산
+        pointDto = pointDto.toBuilder().type(PointType.EVENT).build();
+        Point point = createPoint(pointDto, uuid);
+        pointRepository.save(point);
+        Long pointId = point.getId();
+
+        return PointIdOutDto.builder().pointId(pointId).build();
     }
 }
