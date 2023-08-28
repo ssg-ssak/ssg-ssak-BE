@@ -35,13 +35,13 @@ public class GiftPointController {
     }
 
     // 2. 포인트 선물받기(수락)
-    @PostMapping("/accept")
+    @PutMapping("/accept")
     public void acceptGiftPoint(@RequestBody GiftPointAcceptInVo acceptInVo) {
         giftPointService.acceptGiftPoint(modelMapper.map(acceptInVo, GiftPointAcceptDto.class));
     }
 
     // 3. 포인트 선물받기(거절)
-    @PostMapping("/refuse")
+    @PutMapping("/refuse")
     public void refuseGiftPoint(@RequestBody GiftPointRefuseInVo refuseInVo) {
         giftPointService.refuseGiftPoint(modelMapper.map(refuseInVo, GiftPointRefuseDto.class));
     }

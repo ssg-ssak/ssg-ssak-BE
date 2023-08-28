@@ -33,14 +33,20 @@ public class PointController {
 
     // 1. 포인트 적립 - 스토어 -> 진행이후 스토어포인트에 POST, "/storepoint/add"로 요청이 들어가는것까지가 한세트임
     @PostMapping("/add/store")
-    public void addPointStore(@RequestBody PointAddInVo addInVo) {
-        pointService.pointAddStore(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
+    public ResponseEntity<PointIdOutVo> addPointStore(@RequestBody PointAddInVo addInVo) {
+        PointIdOutDto outDto =
+                pointService.pointAddStore(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
+        PointIdOutVo outVo = modelMapper.map(outDto, PointIdOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 
     // 2. 포인트 적립 - 파트너 -> 진행이후 파트너포인트에 POST, "/partnerpoint/add"로 요청이 들어가는것까지가 한세트임
     @PostMapping("/add/partner")
-    public void addPointPartner(@RequestBody PointAddPartnerInVo addInVo){
-        pointService.pointAddPartner(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
+    public ResponseEntity<PointIdOutVo> addPointPartner(@RequestBody PointAddPartnerInVo addInVo){
+        PointIdOutDto outDto =
+                pointService.pointAddPartner(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
+        PointIdOutVo outVo = modelMapper.map(outDto, PointIdOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 
     // 3. 포인트 선물받기 -> 진행이후 선물포인트에 POST, "/gift/accept"로 요청이 들어가는것가지가 한세트임
@@ -54,8 +60,11 @@ public class PointController {
 
     // 4. 포인트 전환하기 -> 진행이후 전환포인트에 POST, "/exchangepoint/add"로 요청이 들어가는것까지가 한세트임
     @PostMapping("/exchange")
-    public void exchangePoint(@RequestBody PointExchangeInVo pointExchangeInVo) {
-        pointService.pointExchange(modelMapper.map(pointExchangeInVo, CreatePointDto.class), pointExchangeInVo.getUuid());
+    public ResponseEntity<PointIdOutVo> exchangePoint(@RequestBody PointExchangeInVo pointExchangeInVo) {
+        PointIdOutDto outDto =
+                pointService.pointExchange(modelMapper.map(pointExchangeInVo, CreatePointDto.class), pointExchangeInVo.getUuid());
+        PointIdOutVo outVo = modelMapper.map(outDto, PointIdOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 
     // 5. 포인트 기간별로 조회하기

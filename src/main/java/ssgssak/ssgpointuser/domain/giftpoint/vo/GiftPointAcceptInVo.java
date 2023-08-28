@@ -2,7 +2,7 @@ package ssgssak.ssgpointuser.domain.giftpoint.vo;
 
 import lombok.Getter;
 import lombok.ToString;
-import ssgssak.ssgpointuser.domain.giftpoint.entity.GiftStatus;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -10,9 +10,11 @@ import java.time.LocalDateTime;
 @ToString
 public class GiftPointAcceptInVo {
     private String receiverUUID;
-    private LocalDateTime createAt;
     private Long givePointId;
     private Long receivePointId;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime createAt;
 }
 
 
