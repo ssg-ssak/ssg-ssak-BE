@@ -19,6 +19,7 @@ public class PartnerPoint {
     private Long id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private PartnerType type;
 
     @Column(nullable = false)

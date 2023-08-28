@@ -69,7 +69,7 @@ public class PointServiceImpl implements PointService {
 
     // 4. 가맹점(스토어)로 적립 //todo: 모든 적립 vo를 createPoint dto로 바꾸면됨
     @Override
-    public void pointAddStore(CreatePointDto pointDto, String uuid) {
+    public PointIdOutDto pointAddStore(CreatePointDto pointDto, String uuid) {
         log.info("토탈포인트: " + getTotalPoint(uuid));
         // 포인트 계산
         Integer updateTotalPoint = calcTotalPoint(pointDto.getUsed(), getTotalPoint(uuid), pointDto.getUpdatePoint());
@@ -79,16 +79,22 @@ public class PointServiceImpl implements PointService {
         Point point = createPoint(pointDto, uuid);
         log.info("최종 토탈포인트: " + point.getTotalPoint());
         pointRepository.save(point);
+        Long pointId = point.getId();
+
+        return PointIdOutDto.builder().pointId(pointId).build();
     }
 
     // 5. 제휴사(파트너)로 적립
     @Override
-    public void pointAddPartner(CreatePointDto pointDto, String uuid) {
+    public PointIdOutDto pointAddPartner(CreatePointDto pointDto, String uuid) {
         // 포인트 계산
         Integer updateTotalPoint = calcTotalPoint(pointDto.getUsed(), getTotalPoint(uuid), pointDto.getUpdatePoint());
         pointDto = pointDto.toBuilder().type(PointType.PARTNER).totalPoint(updateTotalPoint).build();
         Point point = createPoint(pointDto, uuid);
         pointRepository.save(point);
+        Long pointId = point.getId();
+
+        return PointIdOutDto.builder().pointId(pointId).build();
     }
 
 
@@ -122,7 +128,7 @@ public class PointServiceImpl implements PointService {
 
     // 7. 포인트 전환하기
     @Override
-    public void pointExchange(CreatePointDto pointDto, String uuid) {
+    public PointIdOutDto pointExchange(CreatePointDto pointDto, String uuid) {
         // 포인트 생성
         Integer updateTotalPoint = calcTotalPoint(pointDto.getUsed(), getTotalPoint(uuid), pointDto.getUpdatePoint());
         pointDto = pointDto.toBuilder()
@@ -131,6 +137,9 @@ public class PointServiceImpl implements PointService {
                 .build();
         Point point = createPoint(pointDto, uuid);
         pointRepository.save(point);
+        Long pointId = point.getId();
+
+        return PointIdOutDto.builder().pointId(pointId).build();
     }
 
     // 8. 포인트 조회하기 todo: startDay와 endDay 타입변경하기, 컨트롤러에서
