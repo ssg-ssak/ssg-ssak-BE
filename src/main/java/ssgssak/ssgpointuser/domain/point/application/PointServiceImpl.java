@@ -9,6 +9,7 @@ import ssgssak.ssgpointuser.domain.point.dto.*;
 import ssgssak.ssgpointuser.domain.point.entity.*;
 import ssgssak.ssgpointuser.domain.point.infrastructure.PointRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,9 @@ public class PointServiceImpl implements PointService {
      * 8. 포인트 조회하기
      * 9. 사용가능 포인트 조회
      * 10. 기간별 적립한/사용한 포인트 계산
+     * 11. 이벤트 포인트 적립
+     * 12. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
+     * 13. 출석체크 연속 확인하기 (어제부터 9일전까지 출석이 9번이라면, 오늘이 10번째임 -> 추가포인트 지급)
      */
 
 
@@ -61,23 +65,19 @@ public class PointServiceImpl implements PointService {
 
     // 3. 포인트 생성
     @Override
-    public Point createPoint(CreatePointDto dto, String uuid) {
-        Point point = Point.builder().userUUID(uuid).build();
-        modelMapper.map(dto, point);
+    public Point createPoint(CreatePointDto pointDto, String uuid) {
+        Integer updateTotalPoint = calcTotalPoint(pointDto.getUsed(), getTotalPoint(uuid), pointDto.getUpdatePoint());
+        pointDto = pointDto.toBuilder().totalPoint(updateTotalPoint).build();
+        Point point = Point.builder().isEvent(pointDto.getType().getIsEvent()).userUUID(uuid).build();
+        modelMapper.map(pointDto, point);
         return point;
     }
 
     // 4. 가맹점(스토어)로 적립 //todo: 모든 적립 vo를 createPoint dto로 바꾸면됨
     @Override
     public PointIdOutDto pointAddStore(CreatePointDto pointDto, String uuid) {
-        log.info("토탈포인트: " + getTotalPoint(uuid));
         // 포인트 계산
-        Integer updateTotalPoint = calcTotalPoint(pointDto.getUsed(), getTotalPoint(uuid), pointDto.getUpdatePoint());
-        log.info("업데이트 토탈 포인트: " + updateTotalPoint);
-        pointDto = pointDto.toBuilder().type(PointType.STORE).totalPoint(updateTotalPoint).build();
-        log.info("최종 토탈포인트: " + pointDto.getTotalPoint());
         Point point = createPoint(pointDto, uuid);
-        log.info("최종 토탈포인트: " + point.getTotalPoint());
         pointRepository.save(point);
         Long pointId = point.getId();
 
@@ -88,8 +88,6 @@ public class PointServiceImpl implements PointService {
     @Override
     public PointIdOutDto pointAddPartner(CreatePointDto pointDto, String uuid) {
         // 포인트 계산
-        Integer updateTotalPoint = calcTotalPoint(pointDto.getUsed(), getTotalPoint(uuid), pointDto.getUpdatePoint());
-        pointDto = pointDto.toBuilder().type(PointType.PARTNER).totalPoint(updateTotalPoint).build();
         Point point = createPoint(pointDto, uuid);
         pointRepository.save(point);
         Long pointId = point.getId();
@@ -149,6 +147,7 @@ public class PointServiceImpl implements PointService {
         LocalDateTime endDay = requestDto.getEndDay();
         PointType type = requestDto.getType();
         Boolean used = requestDto.getUsed();
+        Boolean isEvent = requestDto.getIsEvent();
         log.info("sttday : "+startDay);
         log.info("endday : "+endDay);
 
@@ -167,23 +166,23 @@ public class PointServiceImpl implements PointService {
             // 3. 선택한 타입을, 전체 사용유무로 검색
             else if (type != null && used == null) {
                 // 일반 타입이라면, 이벤트를 제외하고 검색한다
-                if (type == PointType.GENERAL) {
-                    pointList = pointRepository.findAllByUserUUIDAndTypeNotAndCreateAtBetween(uuid, PointType.EVENT, startDay, endDay);
+                if (isEvent == false) {
+                    pointList = pointRepository.findAllByUserUUIDAndIsEventFalseAndCreateAtBetween(uuid, startDay, endDay);
                 }
                 // 이벤트 타입이라면, 이벤트만 검색한다
                 else {
-                    pointList = pointRepository.findAllByUserUUIDAndTypeAndCreateAtBetween(uuid, type, startDay, endDay);
+                    pointList = pointRepository.findAllByUserUUIDAndIsEventTrueAndCreateAtBetween(uuid, startDay, endDay);
                 }
             }
             // 4. 선택한 타입과, 선택한 사용유무로 검색
             else {
                 // 일반 타입이라면, 이벤트를 제외하고 검색한다
-                if (type == PointType.GENERAL) {
-                    pointList = pointRepository.findAllByUserUUIDAndTypeNotAndUsedAndCreateAtBetween(uuid, PointType.EVENT, used, startDay, endDay);
+                if (isEvent == false) {
+                    pointList = pointRepository.findAllByUserUUIDAndIsEventFalseAndUsedAndCreateAtBetween(uuid, used, startDay, endDay);
                 }
                 // 이벤트 타입이라면, 이벤트만 검색한다
                 else {
-                    pointList = pointRepository.findAllByUserUUIDAndTypeAndUsedAndCreateAtBetween(uuid, type, used, startDay, endDay);
+                    pointList = pointRepository.findAllByUserUUIDAndIsEventTrueAndUsedAndCreateAtBetween(uuid, used, startDay, endDay);
                 }
             }
         }
@@ -209,7 +208,7 @@ public class PointServiceImpl implements PointService {
                 .build();
     }
 
-    // 10. 사용가능 포인트 조회
+    // 9. 사용가능 포인트 조회
     @Override
     public PointPossibleResponseDto searchPossible(String uuid) {
         //todo: 일단 totalpoint를 return해주는데, 나중에 적립예정을 빼고 보내야함
@@ -218,7 +217,7 @@ public class PointServiceImpl implements PointService {
                 .build();
     }
 
-    // 11. 기간별 적립한/사용한 포인트 계산
+    // 10. 기간별 적립한/사용한 포인트 계산
     @Override
     public HashMap<String, Integer> calcAddUsedPoint(List<Point> pointList) {
         HashMap<String, Integer> addUsedPointList = new HashMap<>();
@@ -234,4 +233,66 @@ public class PointServiceImpl implements PointService {
         addUsedPointList.put("usedPoint", usedPoint);
         return addUsedPointList;
     }
+
+    // 11. 이벤트 포인트 적립
+    @Override
+    public PointEventOutDto pointAddEvent(CreatePointDto pointDto, String uuid, Integer continueDay) {
+        // 출석체크 이벤트인 경우
+        if (pointDto.getType() == PointType.ATTENDANCE) {
+            Boolean isContinue = yesterdayAttendance(uuid);
+            // 전날에 출석체크를 했고, continueDay가 9라면 -> 10포인트를 추가, continueDay를 0으로 초기화
+            if (isContinue == true && continueDay == 9) {
+                pointDto = pointDto.toBuilder().updatePoint(10).build();
+                continueDay = 1;
+            }
+            // 전날에 출석체크를 했고, continueDay가 9보다 작다면 -> 1포인트를 추가, continueDay를 +1
+            else if (isContinue == true && continueDay < 9) {
+                pointDto = pointDto.toBuilder().updatePoint(1).build();
+                continueDay++;
+            }// 전날에 출석체크를 하지 않았다면 -> 1포인트를 추가, continueDay를 1로 초기화
+            else {
+                pointDto = pointDto.toBuilder().updatePoint(1).build();
+                continueDay = 1;
+            }
+        }
+        Point point = createPoint(pointDto, uuid);
+        pointRepository.save(point);
+        Long pointId = point.getId();
+
+        return PointEventOutDto.builder().pointId(pointId).continueDay(continueDay).build();
+    }
+
+    // 12. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
+    @Override
+    public CheckDuplicateDto checkDuplicate(String uuid, PointType type) {
+        LocalDateTime stt = LocalDate.now().atStartOfDay(); // 오늘
+        LocalDateTime end = LocalDate.now().plusDays(1).atStartOfDay(); // 내일
+        log.info("stt: "+stt +" end: "+end);
+        // 오늘-내일 사이에서, uuid와 type에 해당하는, 이벤트 포인트를 반환
+        List<Point> pointList = pointRepository.findAllByUserUUIDAndTypeAndIsEventTrueAndCreateAtBetween(uuid, type, stt, end);
+        log.info("pointList : " + pointList);
+        CheckDuplicateDto checkDuplicateDto = CheckDuplicateDto.builder().build();
+        if (pointList.isEmpty() == true) {
+            checkDuplicateDto = checkDuplicateDto.toBuilder().duplicate(false).build();
+        } else {
+            checkDuplicateDto = checkDuplicateDto.toBuilder().duplicate(true).build();
+        }
+        log.info("check : " + checkDuplicateDto);
+        return checkDuplicateDto;
+    }
+
+    // 13. 어제의 출석체크 유무 조회
+    @Override
+    public Boolean yesterdayAttendance(String uuid) {
+        LocalDateTime yesterdayStart = LocalDate.now().minusDays(1).atStartOfDay();
+        LocalDateTime yesterdayEnd = LocalDate.now().atStartOfDay();
+        Optional<Point> point = pointRepository.findByUserUUIDAndTypeAndCreateAtBetween(uuid, PointType.ATTENDANCE, yesterdayStart, yesterdayEnd);
+        if (point.isPresent()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }

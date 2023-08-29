@@ -1,5 +1,6 @@
 package ssgssak.ssgpointuser.domain.point.presentation;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssgssak.ssgpointuser.domain.point.application.PointServiceImpl;
 import ssgssak.ssgpointuser.domain.point.dto.*;
+import ssgssak.ssgpointuser.domain.point.entity.PointType;
 import ssgssak.ssgpointuser.domain.point.vo.*;
 
 @RestController
@@ -28,6 +30,8 @@ public class PointController {
      * 4. 포인트 전환하기
      * 5. 포인트 기간별로 조회하기
      * 6. 사용가능 포인트 조회
+     * 7. 포인트 적립 - 이벤트
+     * 8. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
      */
 
 
@@ -42,7 +46,7 @@ public class PointController {
 
     // 2. 포인트 적립 - 파트너 -> 진행이후 파트너포인트에 POST, "/partnerpoint/add"로 요청이 들어가는것까지가 한세트임
     @PostMapping("/add/partner")
-    public ResponseEntity<PointIdOutVo> addPointPartner(@RequestBody PointAddPartnerInVo addInVo){
+    public ResponseEntity<PointIdOutVo> addPointPartner(@RequestBody PointAddInVo addInVo) {
         PointIdOutDto outDto =
                 pointService.pointAddPartner(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
         PointIdOutVo outVo = modelMapper.map(outDto, PointIdOutVo.class);
@@ -60,9 +64,9 @@ public class PointController {
 
     // 4. 포인트 전환하기 -> 진행이후 전환포인트에 POST, "/exchangepoint/add"로 요청이 들어가는것까지가 한세트임
     @PostMapping("/exchange")
-    public ResponseEntity<PointIdOutVo> exchangePoint(@RequestBody PointExchangeInVo pointExchangeInVo) {
+    public ResponseEntity<PointIdOutVo> exchangePoint(@RequestBody PointAddInVo addInVo) {
         PointIdOutDto outDto =
-                pointService.pointExchange(modelMapper.map(pointExchangeInVo, CreatePointDto.class), pointExchangeInVo.getUuid());
+                pointService.pointExchange(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
         PointIdOutVo outVo = modelMapper.map(outDto, PointIdOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
@@ -71,7 +75,7 @@ public class PointController {
     @GetMapping("/list") // todo: vo로 받아오기
     public ResponseEntity<PointListOutVo> searchPointList(PointListInVo inVo) {
         PointListRequestDto requestDto = modelMapper.map(inVo, PointListRequestDto.class);
-        PointListResponseDto responseDto = pointService.pointSearch(requestDto,inVo.getUuid());
+        PointListResponseDto responseDto = pointService.pointSearch(requestDto, inVo.getUuid());
         PointListOutVo outVo = modelMapper.map(responseDto, PointListOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
@@ -81,6 +85,25 @@ public class PointController {
     public ResponseEntity<PointPossibleOutVo> searchPossiblePoint(@RequestParam String uuid) {
         PointPossibleResponseDto responseDto = pointService.searchPossible(uuid);
         PointPossibleOutVo outVo = modelMapper.map(responseDto, PointPossibleOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
+    }
+
+    // 7. 포인트 적립 - 이벤트
+    @PostMapping("/add/event")
+    public ResponseEntity<PointEventOutVo> addPointEvent(@RequestBody PointAddInVo addInVo,
+                                                      @RequestParam(required = false) Integer continueDay) {
+        PointEventOutDto outDto =
+                pointService.pointAddEvent(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid(), continueDay);
+        PointEventOutVo outVo = modelMapper.map(outDto, PointEventOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
+    }
+
+    // 8. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
+    @GetMapping("/duplicate/event")
+    public ResponseEntity<CheckDuplicateOutVo> checkDuplicateEvent(@RequestParam String uuid,
+                                                                   @RequestParam PointType type) {
+        CheckDuplicateDto duplicateDto = pointService.checkDuplicate(uuid, type);
+        CheckDuplicateOutVo outVo = modelMapper.map(duplicateDto, CheckDuplicateOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 }
