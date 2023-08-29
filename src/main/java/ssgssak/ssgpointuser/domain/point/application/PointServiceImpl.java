@@ -235,16 +235,35 @@ public class PointServiceImpl implements PointService {
     }
 
     // 11. 이벤트 포인트 적립
-    public PointIdOutDto pointAddEvent(CreatePointDto pointDto, String uuid) {
-        // 포인트 계산
+    @Override
+    public PointEventOutDto pointAddEvent(CreatePointDto pointDto, String uuid, Integer continueDay) {
+        // 출석체크 이벤트인 경우
+        if (pointDto.getType() == PointType.ATTENDANCE) {
+            Boolean isContinue = yesterdayAttendance(uuid);
+            // 전날에 출석체크를 했고, continueDay가 9라면 -> 10포인트를 추가, continueDay를 0으로 초기화
+            if (isContinue == true && continueDay == 9) {
+                pointDto = pointDto.toBuilder().updatePoint(10).build();
+                continueDay = 1;
+            }
+            // 전날에 출석체크를 했고, continueDay가 9보다 작다면 -> 1포인트를 추가, continueDay를 +1
+            else if (isContinue == true && continueDay < 9) {
+                pointDto = pointDto.toBuilder().updatePoint(1).build();
+                continueDay++;
+            }// 전날에 출석체크를 하지 않았다면 -> 1포인트를 추가, continueDay를 1로 초기화
+            else {
+                pointDto = pointDto.toBuilder().updatePoint(1).build();
+                continueDay = 1;
+            }
+        }
         Point point = createPoint(pointDto, uuid);
         pointRepository.save(point);
         Long pointId = point.getId();
 
-        return PointIdOutDto.builder().pointId(pointId).build();
+        return PointEventOutDto.builder().pointId(pointId).continueDay(continueDay).build();
     }
 
     // 12. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
+    @Override
     public CheckDuplicateDto checkDuplicate(String uuid, PointType type) {
         LocalDateTime stt = LocalDate.now().atStartOfDay(); // 오늘
         LocalDateTime end = LocalDate.now().plusDays(1).atStartOfDay(); // 내일
@@ -261,4 +280,19 @@ public class PointServiceImpl implements PointService {
         log.info("check : " + checkDuplicateDto);
         return checkDuplicateDto;
     }
+
+    // 13. 어제의 출석체크 유무 조회
+    @Override
+    public Boolean yesterdayAttendance(String uuid) {
+        LocalDateTime yesterdayStart = LocalDate.now().minusDays(1).atStartOfDay();
+        LocalDateTime yesterdayEnd = LocalDate.now().atStartOfDay();
+        Optional<Point> point = pointRepository.findByUserUUIDAndTypeAndCreateAtBetween(uuid, PointType.ATTENDANCE, yesterdayStart, yesterdayEnd);
+        if (point.isPresent()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }

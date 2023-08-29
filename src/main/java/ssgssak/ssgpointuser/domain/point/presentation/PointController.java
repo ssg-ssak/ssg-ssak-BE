@@ -46,7 +46,7 @@ public class PointController {
 
     // 2. 포인트 적립 - 파트너 -> 진행이후 파트너포인트에 POST, "/partnerpoint/add"로 요청이 들어가는것까지가 한세트임
     @PostMapping("/add/partner")
-    public ResponseEntity<PointIdOutVo> addPointPartner(@RequestBody PointAddPartnerInVo addInVo) {
+    public ResponseEntity<PointIdOutVo> addPointPartner(@RequestBody PointAddInVo addInVo) {
         PointIdOutDto outDto =
                 pointService.pointAddPartner(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
         PointIdOutVo outVo = modelMapper.map(outDto, PointIdOutVo.class);
@@ -64,9 +64,9 @@ public class PointController {
 
     // 4. 포인트 전환하기 -> 진행이후 전환포인트에 POST, "/exchangepoint/add"로 요청이 들어가는것까지가 한세트임
     @PostMapping("/exchange")
-    public ResponseEntity<PointIdOutVo> exchangePoint(@RequestBody PointExchangeInVo pointExchangeInVo) {
+    public ResponseEntity<PointIdOutVo> exchangePoint(@RequestBody PointAddInVo addInVo) {
         PointIdOutDto outDto =
-                pointService.pointExchange(modelMapper.map(pointExchangeInVo, CreatePointDto.class), pointExchangeInVo.getUuid());
+                pointService.pointExchange(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
         PointIdOutVo outVo = modelMapper.map(outDto, PointIdOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
@@ -90,10 +90,11 @@ public class PointController {
 
     // 7. 포인트 적립 - 이벤트
     @PostMapping("/add/event")
-    public ResponseEntity<PointIdOutVo> addPointEvent(@RequestBody PointAddInVo addInVo) {
-        PointIdOutDto outDto =
-                pointService.pointAddEvent(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid());
-        PointIdOutVo outVo = modelMapper.map(outDto, PointIdOutVo.class);
+    public ResponseEntity<PointEventOutVo> addPointEvent(@RequestBody PointAddInVo addInVo,
+                                                      @RequestParam(required = false) Integer continueDay) {
+        PointEventOutDto outDto =
+                pointService.pointAddEvent(modelMapper.map(addInVo, CreatePointDto.class), addInVo.getUuid(), continueDay);
+        PointEventOutVo outVo = modelMapper.map(outDto, PointEventOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 

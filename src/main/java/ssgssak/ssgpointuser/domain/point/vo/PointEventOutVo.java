@@ -1,4 +1,4 @@
-package ssgssak.ssgpointuser.domain.eventpoint.dto;
+package ssgssak.ssgpointuser.domain.point.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttendancePointAddDto {
+public class PointEventOutVo {
     private Long pointId;
     private Integer continueDay;
 }

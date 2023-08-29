@@ -6,4 +6,5 @@ import lombok.Getter;
 public class AttendancePointAddInVo {
     private String uuid;
     private Long pointId;
+    private Integer continueDay;
 }

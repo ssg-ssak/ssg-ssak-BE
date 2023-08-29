@@ -20,4 +20,7 @@ public class AttendancePoint extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Long pointId;
+
+    @Column(nullable = false)
+    private Integer continueDay; // 연속 몇일동안 출석했는지를 확인
 }

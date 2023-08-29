@@ -21,6 +21,9 @@ public interface PointService {
      * 8. 포인트 조회하기
      * 9. 사용가능 포인트 조회
      * 10. 기간별 적립한/사용한 포인트 계산
+     * 11. 이벤트 포인트 적립
+     * 12. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
+     * 13. 어제의 출석체크 유무 조회
      */
 
 
@@ -53,4 +56,13 @@ public interface PointService {
 
     // 10. 기간별 적립한/사용한 포인트 계산
     HashMap<String, Integer> calcAddUsedPoint(List<Point> pointList);
+
+    // 11. 이벤트 포인트 적립
+    PointEventOutDto pointAddEvent(CreatePointDto pointDto, String uuid, Integer continueDay);
+
+    // 12. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
+    CheckDuplicateDto checkDuplicate(String uuid, PointType type);
+
+    // 13. 어제의 출석체크 유무 조회
+    Boolean yesterdayAttendance(String uuid);
 }

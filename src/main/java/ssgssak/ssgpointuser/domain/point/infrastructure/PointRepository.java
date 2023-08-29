@@ -24,6 +24,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
      * 8. 기간없이, 선물 포인트만, 사용 유무에 관계없이 조회
      * 9. 기간없이, 선물 포인트만, 사용 유무에 따라서 조회
      * 10. 하루종일, 이벤트타입에 따른 중복체크 조회
+     * 11. 어제의, 출석체크포인트를 검색
      */
 
     // 1. 유저의 가장 최신 Point 조회
@@ -44,8 +45,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
     //6. 기간별, 일반 타입(EVENT 제외)을, 선택한 사용유무에 따라서 조회
     List<Point> findAllByUserUUIDAndIsEventFalseAndUsedAndCreateAtBetween(String uuid, Boolean used, LocalDateTime stt, LocalDateTime end);
 
-    //7. 기간별, 이벤트
-    // 타입을, 선택한 사용유무에 따라서 조회
+    //7. 기간별, 이벤트 타입을, 선택한 사용유무에 따라서 조회
     List<Point> findAllByUserUUIDAndIsEventTrueAndUsedAndCreateAtBetween(String uuid, Boolean used, LocalDateTime stt, LocalDateTime end);
 
     //8. 기간없이, 선물 포인트만, 사용 유무에 관계없이 조회
@@ -56,4 +56,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
 
     //10. 하루종일, 이벤트타입에 따른 중복체크 조회
     List<Point> findAllByUserUUIDAndTypeAndIsEventTrueAndCreateAtBetween(String uuid, PointType type, LocalDateTime stt, LocalDateTime end);
+
+    //11. 어제의, 출석체크포인트를 검색
+    Optional<Point> findByUserUUIDAndTypeAndCreateAtBetween(String uuid, PointType pointType, LocalDateTime start,LocalDateTime end);
 }
