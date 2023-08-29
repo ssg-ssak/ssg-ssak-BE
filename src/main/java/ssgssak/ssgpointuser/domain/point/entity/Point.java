@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ssgssak.ssgpointuser.domain.user.entity.User;
 import ssgssak.ssgpointuser.global.common.entity.BaseTimeEntity;
 
 @Entity
@@ -36,5 +35,7 @@ public class Point extends BaseTimeEntity {
     @Column(nullable = false)
     private String userUUID;
 
+    @Column(nullable = false)
+    private Boolean isEvent;  // 포인트가 일반인지 이벤트인지 확인하는 필드
 
 }

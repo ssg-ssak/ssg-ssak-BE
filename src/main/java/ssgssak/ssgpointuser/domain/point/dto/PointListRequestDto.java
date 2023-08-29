@@ -17,4 +17,5 @@ public class PointListRequestDto {
     private Boolean used;
     private LocalDateTime startDay;
     private LocalDateTime endDay;
+    private Boolean isEvent;
 }

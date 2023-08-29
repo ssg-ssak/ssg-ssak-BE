@@ -5,21 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ssgssak.ssgpointuser.global.common.entity.BaseTimeEntity;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttendancePoint {
+public class AttendancePoint extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "int default 1")
-    private Integer continueCheck; //최대 10일, 10일이 된다면 다음날은 1로 초기화
-
     @Column(nullable = false)
     private Long pointId;
+
+    @Column(nullable = false)
+    private Integer continueDay; // 연속 몇일동안 출석했는지를 확인
 }
