@@ -9,6 +9,7 @@ import ssgssak.ssgpointuser.domain.point.dto.*;
 import ssgssak.ssgpointuser.domain.point.entity.*;
 import ssgssak.ssgpointuser.domain.point.infrastructure.PointRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,8 @@ public class PointServiceImpl implements PointService {
      * 9. 사용가능 포인트 조회
      * 10. 기간별 적립한/사용한 포인트 계산
      * 11. 이벤트 포인트 적립
+     * 12. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
+     * 13. 출석체크 연속 확인하기 (어제부터 9일전까지 출석이 9번이라면, 오늘이 10번째임 -> 추가포인트 지급)
      */
 
 
@@ -65,7 +68,7 @@ public class PointServiceImpl implements PointService {
     public Point createPoint(CreatePointDto pointDto, String uuid) {
         Integer updateTotalPoint = calcTotalPoint(pointDto.getUsed(), getTotalPoint(uuid), pointDto.getUpdatePoint());
         pointDto = pointDto.toBuilder().totalPoint(updateTotalPoint).build();
-        Point point = Point.builder().userUUID(uuid).build();
+        Point point = Point.builder().isEvent(pointDto.getType().getIsEvent()).userUUID(uuid).build();
         modelMapper.map(pointDto, point);
         return point;
     }
@@ -74,7 +77,6 @@ public class PointServiceImpl implements PointService {
     @Override
     public PointIdOutDto pointAddStore(CreatePointDto pointDto, String uuid) {
         // 포인트 계산
-        pointDto = pointDto.toBuilder().type(PointType.STORE).build();
         Point point = createPoint(pointDto, uuid);
         pointRepository.save(point);
         Long pointId = point.getId();
@@ -86,7 +88,6 @@ public class PointServiceImpl implements PointService {
     @Override
     public PointIdOutDto pointAddPartner(CreatePointDto pointDto, String uuid) {
         // 포인트 계산
-        pointDto = pointDto.toBuilder().type(PointType.PARTNER).build();
         Point point = createPoint(pointDto, uuid);
         pointRepository.save(point);
         Long pointId = point.getId();
@@ -146,6 +147,7 @@ public class PointServiceImpl implements PointService {
         LocalDateTime endDay = requestDto.getEndDay();
         PointType type = requestDto.getType();
         Boolean used = requestDto.getUsed();
+        Boolean isEvent = requestDto.getIsEvent();
         log.info("sttday : "+startDay);
         log.info("endday : "+endDay);
 
@@ -164,23 +166,23 @@ public class PointServiceImpl implements PointService {
             // 3. 선택한 타입을, 전체 사용유무로 검색
             else if (type != null && used == null) {
                 // 일반 타입이라면, 이벤트를 제외하고 검색한다
-                if (type == PointType.GENERAL) {
-                    pointList = pointRepository.findAllByUserUUIDAndTypeNotAndCreateAtBetween(uuid, PointType.EVENT, startDay, endDay);
+                if (isEvent == false) {
+                    pointList = pointRepository.findAllByUserUUIDAndIsEventFalseAndCreateAtBetween(uuid, startDay, endDay);
                 }
                 // 이벤트 타입이라면, 이벤트만 검색한다
                 else {
-                    pointList = pointRepository.findAllByUserUUIDAndTypeAndCreateAtBetween(uuid, type, startDay, endDay);
+                    pointList = pointRepository.findAllByUserUUIDAndIsEventTrueAndCreateAtBetween(uuid, startDay, endDay);
                 }
             }
             // 4. 선택한 타입과, 선택한 사용유무로 검색
             else {
                 // 일반 타입이라면, 이벤트를 제외하고 검색한다
-                if (type == PointType.GENERAL) {
-                    pointList = pointRepository.findAllByUserUUIDAndTypeNotAndUsedAndCreateAtBetween(uuid, PointType.EVENT, used, startDay, endDay);
+                if (isEvent == false) {
+                    pointList = pointRepository.findAllByUserUUIDAndIsEventFalseAndUsedAndCreateAtBetween(uuid, used, startDay, endDay);
                 }
                 // 이벤트 타입이라면, 이벤트만 검색한다
                 else {
-                    pointList = pointRepository.findAllByUserUUIDAndTypeAndUsedAndCreateAtBetween(uuid, type, used, startDay, endDay);
+                    pointList = pointRepository.findAllByUserUUIDAndIsEventTrueAndUsedAndCreateAtBetween(uuid, used, startDay, endDay);
                 }
             }
         }
@@ -235,11 +237,28 @@ public class PointServiceImpl implements PointService {
     // 11. 이벤트 포인트 적립
     public PointIdOutDto pointAddEvent(CreatePointDto pointDto, String uuid) {
         // 포인트 계산
-        pointDto = pointDto.toBuilder().type(PointType.EVENT).build();
         Point point = createPoint(pointDto, uuid);
         pointRepository.save(point);
         Long pointId = point.getId();
 
         return PointIdOutDto.builder().pointId(pointId).build();
+    }
+
+    // 12. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
+    public CheckDuplicateDto checkDuplicate(String uuid, PointType type) {
+        LocalDateTime stt = LocalDate.now().atStartOfDay(); // 오늘
+        LocalDateTime end = LocalDate.now().plusDays(1).atStartOfDay(); // 내일
+        log.info("stt: "+stt +" end: "+end);
+        // 오늘-내일 사이에서, uuid와 type에 해당하는, 이벤트 포인트를 반환
+        List<Point> pointList = pointRepository.findAllByUserUUIDAndTypeAndIsEventTrueAndCreateAtBetween(uuid, type, stt, end);
+        log.info("pointList : " + pointList);
+        CheckDuplicateDto checkDuplicateDto = CheckDuplicateDto.builder().build();
+        if (pointList.isEmpty() == true) {
+            checkDuplicateDto = checkDuplicateDto.toBuilder().duplicate(false).build();
+        } else {
+            checkDuplicateDto = checkDuplicateDto.toBuilder().duplicate(true).build();
+        }
+        log.info("check : " + checkDuplicateDto);
+        return checkDuplicateDto;
     }
 }

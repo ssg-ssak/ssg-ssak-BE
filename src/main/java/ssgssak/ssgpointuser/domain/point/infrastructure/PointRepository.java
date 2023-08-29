@@ -23,6 +23,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
      * 7. 기간별, 선택한 타입을, 선택한 사용유무에 따라서 조회
      * 8. 기간없이, 선물 포인트만, 사용 유무에 관계없이 조회
      * 9. 기간없이, 선물 포인트만, 사용 유무에 따라서 조회
+     * 10. 하루종일, 이벤트타입에 따른 중복체크 조회
      */
 
     // 1. 유저의 가장 최신 Point 조회
@@ -35,16 +36,17 @@ public interface PointRepository extends JpaRepository<Point, Long> {
     List<Point> findAllByUserUUIDAndUsedAndCreateAtBetween(String uuid, Boolean used, LocalDateTime stt, LocalDateTime end);
 
     // 4. 기간별, 일반 타입(EVENT 제외)을, 전체 사용유무에 따라서 조회
-    List<Point> findAllByUserUUIDAndTypeNotAndCreateAtBetween(String uuid, PointType type, LocalDateTime stt, LocalDateTime end);
+    List<Point> findAllByUserUUIDAndIsEventFalseAndCreateAtBetween(String uuid, LocalDateTime stt, LocalDateTime end);
 
-    // 5. 기간별, 선택한 타입을, 전체 사용유무에 따라서 조회
-    List<Point> findAllByUserUUIDAndTypeAndCreateAtBetween(String uuid, PointType type, LocalDateTime stt, LocalDateTime end);
+    // 5. 기간별, 이벤트 타입을, 전체 사용유무에 따라서 조회
+    List<Point> findAllByUserUUIDAndIsEventTrueAndCreateAtBetween(String uuid, LocalDateTime stt, LocalDateTime end);
 
     //6. 기간별, 일반 타입(EVENT 제외)을, 선택한 사용유무에 따라서 조회
-    List<Point> findAllByUserUUIDAndTypeNotAndUsedAndCreateAtBetween(String uuid, PointType type, Boolean used, LocalDateTime stt, LocalDateTime end);
+    List<Point> findAllByUserUUIDAndIsEventFalseAndUsedAndCreateAtBetween(String uuid, Boolean used, LocalDateTime stt, LocalDateTime end);
 
-    //7. 기간별, 선택한 타입을, 선택한 사용유무에 따라서 조회
-    List<Point> findAllByUserUUIDAndTypeAndUsedAndCreateAtBetween(String uuid, PointType type, Boolean used, LocalDateTime stt, LocalDateTime end);
+    //7. 기간별, 이벤트
+    // 타입을, 선택한 사용유무에 따라서 조회
+    List<Point> findAllByUserUUIDAndIsEventTrueAndUsedAndCreateAtBetween(String uuid, Boolean used, LocalDateTime stt, LocalDateTime end);
 
     //8. 기간없이, 선물 포인트만, 사용 유무에 관계없이 조회
     List<Point> findAllByUserUUIDAndType(String userUUID, PointType type);
@@ -52,4 +54,6 @@ public interface PointRepository extends JpaRepository<Point, Long> {
     //9. 기간없이, 선물 포인트만, 사용 유무에 따라서 조회
     List<Point> findAllByUserUUIDAndTypeAndUsed(String uuid, PointType type, Boolean used);
 
+    //10. 하루종일, 이벤트타입에 따른 중복체크 조회
+    List<Point> findAllByUserUUIDAndTypeAndIsEventTrueAndCreateAtBetween(String uuid, PointType type, LocalDateTime stt, LocalDateTime end);
 }

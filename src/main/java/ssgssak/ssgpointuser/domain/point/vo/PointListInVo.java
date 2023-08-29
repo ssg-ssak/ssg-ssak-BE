@@ -12,6 +12,7 @@ public class PointListInVo {
     private String uuid;
     private PointType type;
     private Boolean used;
+    private Boolean isEvent;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDay;
