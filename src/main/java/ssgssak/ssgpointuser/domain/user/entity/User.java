@@ -19,28 +19,42 @@ public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, length = 20)
     private String userId;
+
     @Column(nullable = false, length = 100)
     private String userUUID;
+
     @Column(nullable = false, length = 20)
     private String userName;
+
     @Column(nullable = false, length = 300)
     private String userPassword;
+
     @Column(nullable = false, length = 11) // 휴대폰번호는 외부 api에서 진행할것
     private String phoneNumber;
+
     @Column(nullable = false, length = 300)
     private String address;
+
     @Column(length = 30) // email
     private String email;
+
     // regDate, updateDate는 baseEntity로 대체함
     @Column(length = 100)
     private String pointPassword;
+
     //todo: 생성로직을 짜보기, 16자리중 앞에 6개정도는 그냥 써도됨, id를 포함해서 해보자!
     @Column(unique = true, nullable = false, length = 16)
     private String barcodeNumber;
+
     @Column
     private LocalDateTime softDelete;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Roll roll;
 
 
     /**
