@@ -17,12 +17,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     /**
-     * 로그인시 전달받은 uuid로 유저를 가져온다
+     * 로그인시 전달받은 login ID로 유저를 가져온다
      * 이후, 가져온 유저를 이용해 userDetails를 생성한다
      */
     @Override
-    public CustomUserDetails loadUserByUsername(String uuid) throws UsernameNotFoundException {
-        User user = userRepository.findUserByUserUUID(uuid).orElseThrow(()-> new NoSuchElementException());
+    public CustomUserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
+        User user = userRepository.findByUserId(loginId).orElseThrow(()-> new NoSuchElementException());
         return new CustomUserDetails(user);
     }
 }

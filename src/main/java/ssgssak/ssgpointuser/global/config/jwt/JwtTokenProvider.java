@@ -59,7 +59,7 @@ public class JwtTokenProvider {
 
     // 4. 토큰 key 디코드 : env에 저장된 키로, 들어온 토큰을 파싱
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(env.getProperty("JWT.SECRET_KEY"));
+        byte[] keyBytes = Decoders.BASE64.decode(env.getProperty("JWT.SECRET_KEY", String.class));
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

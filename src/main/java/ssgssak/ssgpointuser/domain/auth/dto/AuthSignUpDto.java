@@ -2,7 +2,7 @@ package ssgssak.ssgpointuser.domain.auth.dto;
 
 import lombok.*;
 
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

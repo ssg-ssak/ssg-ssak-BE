@@ -39,7 +39,8 @@ public class ApplicationConfig {
     }
 
     // 패스워드 인코더 : 패스워드를 해싱한다
-    private PasswordEncoder passwordEncoder() {
+    @Bean
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
