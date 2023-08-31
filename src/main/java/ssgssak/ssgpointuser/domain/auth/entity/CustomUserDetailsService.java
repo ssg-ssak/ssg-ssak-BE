@@ -1,6 +1,7 @@
 package ssgssak.ssgpointuser.domain.auth.entity;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +13,7 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -22,6 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public CustomUserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
+        log.info("로그인아이디 : " + loginId);
         User user = userRepository.findByUserId(loginId).orElseThrow(()-> new NoSuchElementException());
         return new CustomUserDetails(user);
     }

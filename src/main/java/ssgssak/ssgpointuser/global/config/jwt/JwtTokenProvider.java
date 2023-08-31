@@ -26,7 +26,7 @@ public class JwtTokenProvider {
 
     /**
      * TokenProvider
-     * 1. 토큰에서 uuid 가져오기
+     * 1. 토큰에서 uuid 가져오기, 토큰에서 loginId 가져오기
      * 2. Claims에서 원하는 claim 값 추출
      * 3. 토큰에서 모든 claims 추출
      * 4. 토큰 key 디코드
@@ -36,8 +36,11 @@ public class JwtTokenProvider {
      * 9. 토큰에서 만료일 추출
      */
 
-    // 1. 토큰에서 uuid 가져오기
+    // 1. 토큰에서 uuid 가져오기 & loginId 가져오기
     public String getUUID(String token) {
+        return extractClaim(token, claims -> claims.get("uuid", String.class));
+    }
+    public String getLoginId(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -75,8 +78,10 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 // claims 설정
                 .setClaims(extractClaims)
-                // CustomUserDetails에서 getUsername으로 UUID를 가져오고, 토큰의 subjcet로 설정함
+                // CustomUserDetails에서 getUsername으로 userId를 가져오고, 토큰의 subjcet로 설정함
                 .setSubject(userDetails.getUsername())
+                // 추가적으로 토큰에 유저의 uuid값을 넣어줌
+                .claim("uuid", userDetails.getUserUUID())
                 // 현재 시간을 발급시간으로 설정
                 .setIssuedAt(new java.util.Date(System.currentTimeMillis()))
                 // 만료일은, 현재시간 + env에 저장된 만료시간으로 설정
@@ -89,7 +94,7 @@ public class JwtTokenProvider {
     // 7. 토큰 유효성 검사 : 토큰 subject에서 가져온 uuid와, CustomUserDetails에 저장된 uuid값이 같은지 확인 + 토큰 만료일 검사값이 false인지 확인
     public boolean validateToken(String token, CustomUserDetails userDetails) {
         final String uuid = getUUID(token);
-        return (uuid.equals(userDetails.getUsername()) && isTokenExpired(token) == false);
+        return (uuid.equals(userDetails.getUserUUID()) && isTokenExpired(token) == false);
     }
 
     // 8. 토큰 만료 여부 검사 : 토큰에서 추출한 만료일이, 현재시간보다 이전인지 확인
