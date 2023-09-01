@@ -30,7 +30,6 @@ public class SecurityConfig {
         http
                 // Restful API를 사용하므로, csrf는 사용할 필요가 없다
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
                 // cors는 사용할것이므로 CorsConfig만 @Configuration 등록하고 따로 설정해주지는 않음
                 // 토큰 방식을 사용하므로, 서버에서 session을 관리하지 않음. 따라서 STATELESS로 설정
                 .sessionManagement(sessionManagement -> sessionManagement
