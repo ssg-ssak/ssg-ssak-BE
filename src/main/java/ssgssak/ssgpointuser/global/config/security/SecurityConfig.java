@@ -1,6 +1,6 @@
 package ssgssak.ssgpointuser.global.config.security;
+
 import lombok.RequiredArgsConstructor;
-import lombok.var;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -57,29 +57,17 @@ public class SecurityConfig {
                 .addFilterBefore(exceptionHandlerFilter, OAuth2AuthorizationRequestRedirectFilter.class);
         return http.build();
     }
-
-    // cors설정
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        return request -> {
-            var cors = new org.springframework.web.cors.CorsConfiguration();
-            cors.setAllowedOriginPatterns(List.of("*"));
-            cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-            cors.setAllowedHeaders(List.of("*"));
-            return cors;
-        };
-    }
-
-//        CorsConfiguration configuration = new CorsConfiguration();
 //
-//        configuration.addAllowedOriginPattern("*");
-//        configuration.addAllowedHeader("*");
-//        configuration.addAllowedMethod("*");
-//        configuration.setAllowCredentials(true);
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-    }
+//    // cors설정
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        return request -> {
+//            var cors = new org.springframework.web.cors.CorsConfiguration();
+//            cors.setAllowedOriginPatterns(List.of("*"));
+//            cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+//            cors.setAllowedHeaders(List.of("*"));
+//            return cors;
+//        };
+//    }
 
 }
