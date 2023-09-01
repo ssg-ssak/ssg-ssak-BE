@@ -3,11 +3,20 @@ package ssgssak.ssgpointuser.domain.auth.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ssgssak.ssgpointuser.domain.auth.dto.AuthDeactivateSignUpDto;
+import ssgssak.ssgpointuser.domain.auth.dto.AuthLoginRequestDto;
+import ssgssak.ssgpointuser.domain.auth.dto.AuthLoginResponseDto;
 import ssgssak.ssgpointuser.domain.auth.dto.AuthSignUpDto;
+import ssgssak.ssgpointuser.domain.auth.entity.CustomUserDetails;
 import ssgssak.ssgpointuser.domain.user.entity.User;
 import ssgssak.ssgpointuser.domain.user.infrastructure.UserRepository;
+import ssgssak.ssgpointuser.global.common.exception.UnAuthorizedException;
+import ssgssak.ssgpointuser.global.config.jwt.JwtTokenProvider;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -19,24 +28,64 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
+
+    /**
+     * auth
+     * 1. 로그인
+     * 2. 회원가입
+     */
+
+    // 1. 로그인
+    public AuthLoginResponseDto userLogin(AuthLoginRequestDto requestDto) {
+        // authenticationManager에서 입력받은 id,pw로 인증을 진행함
+        try {
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    requestDto.getLoginId(),
+                    requestDto.getPassword());
+            log.info("auth정보 : " + authToken.getPrincipal() +", " + authToken.getCredentials());
+            authenticationManager.authenticate(authToken);
+        }
+        // 유저 ID or PW가 불일치할때
+        catch (Exception e) {
+            log.error("인증오류 : ",e);
+            throw new UnAuthorizedException("인증되지 않은 사용자입니다");
+        }
+        // 인증을 통과했으면 새로운 토큰을 return
+        User user = userRepository.findByUserId(requestDto.getLoginId()).orElseThrow();
+        String token = jwtTokenProvider.generateToken(new CustomUserDetails(user));
+        log.info("token : "+token);
+        return AuthLoginResponseDto.builder().token(token).build();
+    }
 
     /**
      * 회원가입
      */
     public void signUp(AuthSignUpDto authSignUpDto) {
         String newUUID = generateUUID();
+        // 비밀번호 해싱
+        String hashPassword = passwordEncoder.encode(authSignUpDto.getUserPassword());
+        authSignUpDto = authSignUpDto.toBuilder().userPassword(hashPassword).build();
+        log.info("hashPw : " + hashPassword);
         User newUser = User.builder()
                 .userUUID(newUUID)
                 .barcodeNumber("init")
                 .build();
+        // dto로 User생성
         modelMapper.map(authSignUpDto,newUser);
+        log.info("new hashPw : " + newUser.getUserPassword());
+        // id를 얻기위해 save
         userRepository.save(newUser);
-        String id = userRepository.findUserByUserUUID(newUUID).get().getId().toString();
-        String newBarcode = generateBarcodeNumber(id);
+        // 바코드 생성 및 설정
+        String newBarcode = generateBarcodeNumber(newUser.getId().toString());
         newUser.setNewBarcodeNumber(newBarcode);
+        // 유저 저장
         userRepository.save(newUser);
     }
 

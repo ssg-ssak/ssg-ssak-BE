@@ -23,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRoll().name()));
+        return List.of(new SimpleGrantedAuthority(user.getRoll().toString()));
     }
 
     @Override
@@ -31,9 +31,13 @@ public class CustomUserDetails implements UserDetails {
         return user.getUserPassword();
     }
 
-    // token에 user를 구분지을 userUUID를 넣어서 사용한다
     @Override
     public String getUsername() {
+        return user.getUserId();
+    }
+
+    // token에 user를 구분지을 userUUID를 넣어서 사용한다
+    public String getUserUUID() {
         return user.getUserUUID();
     }
 
