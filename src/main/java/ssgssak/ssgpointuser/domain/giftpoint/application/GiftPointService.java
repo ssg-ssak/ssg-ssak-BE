@@ -18,17 +18,17 @@ public interface GiftPointService {
     GiftPoint createGiftPoint(GiftPointRequestDto requestDto);
 
     // 2. 포인트 선물하기
-    void giveGiftPoint(GiftPointRequestDto requestDto);
+    void giveGiftPoint(GiftPointRequestDto requestDto, String uuid);
 
     // 3. 포인트 선물받기
-    void acceptGiftPoint(GiftPointAcceptDto responseDto);
+    void acceptGiftPoint(GiftPointAcceptDto responseDto, String uuid);
 
     // 4. 포인트 선물받기(거절)
-    void refuseGiftPoint(GiftPointRefuseDto refuseDto);
+    void refuseGiftPoint(GiftPointRefuseDto refuseDto, String uuid);
 
     // 5. 포인트 선물 대기리스트 조회
     GiftPointWaitListDto getGiftWaitList(String uuid);
 
     // 6. 선물 포인트 조회(적립, 기간에 따라서)
-    GiftPointGetResponseDto getGiftList(GiftPointGetRequestDto requestDto);
+    GiftPointGetResponseDto getGiftList(GiftPointGetRequestDto requestDto, String uuid);
 }

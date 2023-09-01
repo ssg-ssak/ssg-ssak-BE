@@ -6,7 +6,7 @@ import ssgssak.ssgpointuser.domain.giftpoint.entity.GiftStatus;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString

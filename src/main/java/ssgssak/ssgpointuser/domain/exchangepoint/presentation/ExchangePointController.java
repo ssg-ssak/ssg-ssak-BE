@@ -7,6 +7,8 @@ import ssgssak.ssgpointuser.domain.exchangepoint.application.ExchangePointServic
 import ssgssak.ssgpointuser.domain.exchangepoint.dto.ExchangeAddDto;
 import ssgssak.ssgpointuser.domain.exchangepoint.vo.ExchangePointAddInVo;
 
+import java.security.Principal;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/exchange")
@@ -22,7 +24,7 @@ public class ExchangePointController {
 
     // 1. 전환 포인트 적립
     @PostMapping("/add")
-    public void addExchangePoint(@RequestBody ExchangePointAddInVo addInVo) {
-        exchangePointService.pointAddExchange(modelMapper.map(addInVo, ExchangeAddDto.class), addInVo.getUuid());
+    public void addExchangePoint(@RequestBody ExchangePointAddInVo addInVo, Principal principal) {
+        exchangePointService.pointAddExchange(modelMapper.map(addInVo, ExchangeAddDto.class), principal.getName());
     }
 }

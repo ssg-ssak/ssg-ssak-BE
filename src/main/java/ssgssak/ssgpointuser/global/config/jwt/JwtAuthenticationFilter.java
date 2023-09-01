@@ -30,7 +30,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization"); // 토큰을 받아오는 필드는, request 헤더에서 "Authorization"임
         final String jwt;
-        final String loginId; // loginId를 토큰에서 가져옴
         final String uuid; // uuid를 토큰에서 가져올것임
 
         // 헤더가 null이거나, "Bearer"로 시작하지 않는다면 토큰 인증을 진행하지 않음
@@ -41,12 +40,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 토큰 인증 진행
         jwt = authHeader.substring(7); // "Bearer " 뒷부분이 모두 jwt 토큰임
-        loginId = jwtTokenProvider.getLoginId(jwt); // 토큰에서 loginId추출
         uuid = jwtTokenProvider.getUUID(jwt);    // 토큰에서 uuid를 추출
 
         // 만약 loginId가 null이 아니고, SecurityContextHolder에 authentication이 없고, 토큰이 유효성 검사를 통과했다면 authentication 생성
-        if (loginId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            CustomUserDetails userDetails = this.customUserDetailsService.loadUserByUsername(loginId);
+        if (uuid != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            CustomUserDetails userDetails = this.customUserDetailsService.loadUserByUUID(uuid);
             // 토큰이 유효하다면 authentication 생성
             if (jwtTokenProvider.validateToken(jwt, userDetails)) {
                 // todo: 그냥 authentication 생성하는걸로 이해했는데 맞는지 확인, 그리고 credentials가 뭔지 확인

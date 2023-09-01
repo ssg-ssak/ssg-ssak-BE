@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 @Getter
 public class PointListInVo {
-    private String uuid;
     private PointType type;
     private Boolean used;
     private Boolean isEvent;
@@ -20,8 +19,7 @@ public class PointListInVo {
     private LocalDateTime endDay;
 
     // Setter를 사용하지 않으려면 생성자가 필수이다
-    public PointListInVo(String uuid, PointType type, Boolean used, LocalDateTime startDay, LocalDateTime endDay) {
-        this.uuid = uuid;
+    public PointListInVo(PointType type, Boolean used, LocalDateTime startDay, LocalDateTime endDay) {
         this.type = type;
         this.used = used;
         this.startDay = startDay;

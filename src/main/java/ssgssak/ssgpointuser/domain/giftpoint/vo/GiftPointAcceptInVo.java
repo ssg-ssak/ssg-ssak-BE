@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class GiftPointAcceptInVo {
-    private String receiverUUID;
     private Long givePointId;
     private Long receivePointId;
 

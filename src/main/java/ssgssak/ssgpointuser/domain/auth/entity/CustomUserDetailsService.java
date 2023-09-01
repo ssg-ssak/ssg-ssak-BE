@@ -19,13 +19,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     /**
-     * 로그인시 전달받은 login ID로 유저를 가져온다
-     * 이후, 가져온 유저를 이용해 userDetails를 생성한다
+     * 1. uuid로 유저 검색
+     * 2. loginId로 유저 검색
      */
+
+    // 1. 토큰에서 추출한 uuid로 유저를 가져와서, UserDeatilsService를 생성한다
+    public CustomUserDetails loadUserByUUID(String uuid) throws UsernameNotFoundException {
+        User uuidUser = userRepository.findUserByUserUUID(uuid).orElseThrow(()-> new NoSuchElementException());
+        return new CustomUserDetails(uuidUser);
+    }
+
+    // 2. 로그인시 전달받은 login ID로 유저를 가져와서, userDetailsService를 생성한다
     @Override
     public CustomUserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        log.info("로그인아이디 : " + loginId);
-        User user = userRepository.findByUserId(loginId).orElseThrow(()-> new NoSuchElementException());
-        return new CustomUserDetails(user);
+        User loginUser = userRepository.findByUserId(loginId).orElseThrow(() -> new NoSuchElementException());
+        return new CustomUserDetails(loginUser);
     }
 }

@@ -13,6 +13,5 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class GiftPointGetRequestDto {
     private Boolean used;
-    private String uuid;
     private LocalDateTime createAt;
 }

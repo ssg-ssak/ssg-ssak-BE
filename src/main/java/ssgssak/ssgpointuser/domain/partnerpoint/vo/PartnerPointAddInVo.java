@@ -5,7 +5,6 @@ import ssgssak.ssgpointuser.domain.partnerpoint.dto.PartnerType;
 
 @Getter
 public class PartnerPointAddInVo {
-    private String uuid;
     private Long pointId;
     private PartnerType type;
 }
