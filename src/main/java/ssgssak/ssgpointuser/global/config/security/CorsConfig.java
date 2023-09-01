@@ -8,7 +8,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 /**
  * WebMvcConfigurer를 사용하는 대신 WebFluxConfigurer을 사용하도록 변경
  */
-@Configuration
+//@Configuration
 public class CorsConfig implements WebFluxConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
