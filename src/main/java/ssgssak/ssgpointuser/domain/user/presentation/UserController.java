@@ -1,6 +1,7 @@
 package ssgssak.ssgpointuser.domain.user.presentation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +13,13 @@ import ssgssak.ssgpointuser.domain.user.dto.UserUpdatePwDto;
 import ssgssak.ssgpointuser.domain.user.vo.*;
 import ssgssak.ssgpointuser.domain.user.dto.UserUpdatePointPwDto;
 
+import java.security.Principal;
+
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
+@Slf4j
 public class UserController {
 
     private final UserServiceImpl userService;
@@ -31,23 +35,24 @@ public class UserController {
 
     // 1. 회원정보 수정하기
     @PutMapping("/information")
-    public void modifyUserInfo(@RequestBody UserUpdateInfoInVo userUpdateInfoInVo) {
+    public void modifyUserInfo(@RequestBody UserUpdateInfoInVo userUpdateInfoInVo, Principal principal) {
         UserUpdateInfoDto updateInfoDto = modelMapper.map(userUpdateInfoInVo, UserUpdateInfoDto.class);
-        userService.updateUserInfo(updateInfoDto, userUpdateInfoInVo.getUserUUID());
+        log.info("uuid " + principal.getName() );
+        userService.updateUserInfo(updateInfoDto, principal.getName());
     }
 
     // 2. 비밀번호 변경하기
     @PutMapping("/password")
-    public void modifyUserPassword(@RequestBody UserUpdatePwInVo userUpdatePwInVo) {
+    public void modifyUserPassword(@RequestBody UserUpdatePwInVo userUpdatePwInVo, Principal principal) {
         UserUpdatePwDto updatePwDto = modelMapper.map(userUpdatePwInVo, UserUpdatePwDto.class);
-        userService.updateUserPw(updatePwDto, userUpdatePwInVo.getUuid());
+        userService.updateUserPw(updatePwDto, principal.getName());
     }
 
     // 3. 포인트 비밀번호 변경하기
     @PutMapping("/point-password")
-    public void modifyUserPointPw(@RequestBody UserUpdatePointPwInVo userUpdatePointPwInVo) {
+    public void modifyUserPointPw(@RequestBody UserUpdatePointPwInVo userUpdatePointPwInVo, Principal principal) {
         UserUpdatePointPwDto updatePointPwDto = modelMapper.map(userUpdatePointPwInVo, UserUpdatePointPwDto.class);
-        userService.updateUserPointPw(updatePointPwDto, userUpdatePointPwInVo.getUuid());
+        userService.updateUserPointPw(updatePointPwDto, principal.getName());
     }
 
     // 4. 휴대폰 번호로 유저 조회

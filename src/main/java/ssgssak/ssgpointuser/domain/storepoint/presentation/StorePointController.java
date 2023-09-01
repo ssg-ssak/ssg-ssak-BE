@@ -10,6 +10,8 @@ import ssgssak.ssgpointuser.domain.storepoint.application.StorePointServiceImpl;
 import ssgssak.ssgpointuser.domain.storepoint.dto.StorePointAddDto;
 import ssgssak.ssgpointuser.domain.storepoint.vo.StorePointAddInVo;
 
+import java.security.Principal;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/storepoint")
@@ -25,8 +27,8 @@ public class StorePointController {
 
 
     @PostMapping("/add")
-    public void addStorePoint(@RequestBody StorePointAddInVo addInVo) {
-        storePointService.addStorePoint(modelMapper.map(addInVo, StorePointAddDto.class), addInVo.getUuid());
+    public void addStorePoint(@RequestBody StorePointAddInVo addInVo, Principal principal) {
+        storePointService.addStorePoint(modelMapper.map(addInVo, StorePointAddDto.class), principal.getName());
     }
 
 }

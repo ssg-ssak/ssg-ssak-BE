@@ -7,6 +7,4 @@ import lombok.NonNull;
 public class UserUpdatePwInVo {
     @NonNull
     private String password;
-    @NonNull
-    private String uuid;
 }

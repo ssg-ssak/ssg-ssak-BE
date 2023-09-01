@@ -5,7 +5,6 @@ import ssgssak.ssgpointuser.domain.point.entity.PointType;
 
 @Getter
 public class PointAddInVo {
-    private String uuid;
     private Integer updatePoint;
     private Boolean used;
     private PointType type;

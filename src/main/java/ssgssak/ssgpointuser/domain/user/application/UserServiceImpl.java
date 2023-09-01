@@ -1,6 +1,7 @@
 package ssgssak.ssgpointuser.domain.user.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
@@ -36,7 +38,6 @@ public class UserServiceImpl implements UserService{
     public void updateUserInfo(UserUpdateInfoDto updateInfoDto, String uuid) {
         User user = getUserByUUID(uuid);
         user.updateUserInfo(updateInfoDto.getEmail(), updateInfoDto.getAddress());
-
     }
 
     // 2. 유저 비밀번호 수정
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService{
     // 5. 유저 휴대폰 번호로 조회
     @Override
     public UserPhoneSearchingOutVo searchPhoneNumber(String phoneNumber, String userName) {
-        User user = userRepository.findByPhoneNumber(phoneNumber)
+        User user = userRepository.findByPhoneNumber(phoneNumber) //todo: 그냥 바로 phohnNumber랑 userName으로 찾아오도록 수정
                 .orElseThrow(()-> new NoSuchElementException("해당하는 유저가 존재하지 않습니다"));
         if (user.getUserName().equals(userName)) {
             UserPhoneSearchDto phoneOutDto = UserPhoneSearchDto.builder()

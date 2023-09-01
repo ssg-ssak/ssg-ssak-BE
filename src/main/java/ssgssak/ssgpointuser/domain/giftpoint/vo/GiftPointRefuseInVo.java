@@ -7,8 +7,6 @@ import java.time.LocalDateTime;
 
 @Getter
 public class GiftPointRefuseInVo {
-    private String receiverUUID;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createAt;
 }

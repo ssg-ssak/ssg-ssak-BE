@@ -10,6 +10,8 @@ import ssgssak.ssgpointuser.domain.partnerpoint.application.PartnerPointServiceI
 import ssgssak.ssgpointuser.domain.partnerpoint.dto.PartnerPointAddDto;
 import ssgssak.ssgpointuser.domain.partnerpoint.vo.PartnerPointAddInVo;
 
+import java.security.Principal;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/partnerpoint")
@@ -24,7 +26,7 @@ public class PartnerPointController {
      */
 
     @PostMapping("/add")
-    public void addPartnerPoint(@RequestBody PartnerPointAddInVo addInVo) {
-        partnerPointService.addPartnerPoint(modelMapper.map(addInVo, PartnerPointAddDto.class), addInVo.getUuid());
+    public void addPartnerPoint(@RequestBody PartnerPointAddInVo addInVo, Principal principal) {
+        partnerPointService.addPartnerPoint(modelMapper.map(addInVo, PartnerPointAddDto.class), principal.getName());
     }
 }

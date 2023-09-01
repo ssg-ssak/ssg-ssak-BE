@@ -16,6 +16,8 @@ import ssgssak.ssgpointuser.domain.auth.vo.AuthLoginInVo;
 import ssgssak.ssgpointuser.domain.auth.vo.AuthLoginOutVo;
 import ssgssak.ssgpointuser.domain.auth.vo.AuthSignUpVo;
 
+import java.security.Principal;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -42,9 +44,9 @@ public class AuthController {
 
     // 2. 회원탈퇴
     @PutMapping("/deactivate-account")
-    public void deactivateAccount(@RequestBody AuthDeactivateSignUpVo deactivateVo) {
+    public void deactivateAccount(@RequestBody AuthDeactivateSignUpVo deactivateVo, Principal principal) {
         AuthDeactivateSignUpDto deactivateDto = modelMapper.map(deactivateVo, AuthDeactivateSignUpDto.class);
-        authService.deactivateAccount(deactivateDto,deactivateVo.getUserUUID());
+        authService.deactivateAccount(deactivateDto, principal.getName());
     }
 
     // 3. 로그인
