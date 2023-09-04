@@ -57,17 +57,4 @@ public class SecurityConfig {
                 .addFilterBefore(exceptionHandlerFilter, OAuth2AuthorizationRequestRedirectFilter.class);
         return http.build();
     }
-//
-//    // cors설정
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        return request -> {
-//            var cors = new org.springframework.web.cors.CorsConfiguration();
-//            cors.setAllowedOriginPatterns(List.of("*"));
-//            cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//            cors.setAllowedHeaders(List.of("*"));
-//            return cors;
-//        };
-//    }
-
 }
