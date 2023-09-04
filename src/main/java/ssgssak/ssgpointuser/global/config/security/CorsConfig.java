@@ -21,17 +21,3 @@ public class CorsConfig implements WebMvcConfigurer {
                 .maxAge(3000);
     }
 }
-
-//public class CorsConfig implements WebFluxConfigurer {
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        WebFluxConfigurer.super.addCorsMappings(registry);
-//        registry.addMapping("/**")
-//                .allowedOrigins("/**")
-//                .allowedMethods("GET","POST","PUT","PATCH","DELETE")
-//                .allowedHeaders("*")
-//                .allowCredentials(true);
-//    }
-
-
-}
