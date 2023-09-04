@@ -2,15 +2,19 @@ package ssgssak.ssgpointuser.global.config.jwt;
 
 import com.nimbusds.openid.connect.sdk.claims.CommonClaimsSet;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ssgssak.ssgpointuser.domain.auth.entity.CustomUserDetails;
+import ssgssak.ssgpointuser.global.common.exception.TokenExpiredException;
+import ssgssak.ssgpointuser.global.common.exception.TokenInvalidException;
 
 import java.security.Key;
 import java.util.Date;
@@ -20,6 +24,7 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JwtTokenProvider {
 
     private final Environment env; // application.yml에서 설정한 설정값
@@ -49,12 +54,21 @@ public class JwtTokenProvider {
 
     // 3. 토큰에서 모든 claim 추출 : token을 파싱해서 모든 claim 값을 추출한다
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token) // 이 단계에서 token의 유효성 검사 및 만료일 검사를 실시한다!
+                    .getBody();
+        }
+        // parseClaimsJws에서 토큰이 잘못된 경우 error를 발생시킨다! -> 발생한 오류는 ExceptionHandlerFilter로 가서 처리된다!
+        catch (ExpiredJwtException e) {
+            log.error("토큰오류 -> " + e);
+            throw new TokenExpiredException("토큰 파싱단계 - 토큰시간 만료");
+        } catch (Exception e) {
+            throw new TokenInvalidException("토큰 파싱단계 - 유효하지않은 토큰");
+        }
     }
 
     // 4. 토큰 key 디코드 : env에 저장된 키로, 들어온 토큰을 파싱
@@ -88,7 +102,8 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // 7. 토큰 유효성 검사 : 토큰 subject에서 가져온 uuid와, CustomUserDetails에 저장된 uuid값이 같은지 확인 + 토큰 만료일 검사값이 false인지 확인
+    // 7. 토큰 유효성 검사 : 이 메서드는, 토큰 자체의 유효성 검사가 아닌, 사용자 관련 정보가 올바른지를 확인하기 위한것임!!
+    // 토큰 subject에서 가져온 uuid와, CustomUserDetails에 저장된 uuid값이 같은지 확인 + 토큰 만료일 검사값이 false인지 확인
     public boolean validateToken(String token, CustomUserDetails userDetails) {
         final String uuid = getUUID(token);
         return (uuid.equals(userDetails.getUsername()) && isTokenExpired(token) == false);
