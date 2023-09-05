@@ -1,4 +1,4 @@
-package ssgssak.ssgpointuser.domain.partnerpoint.dto;
+package ssgssak.ssgpointuser.domain.partnerpoint.entity;
 
 public enum PartnerType {
     SAMSUNG,
