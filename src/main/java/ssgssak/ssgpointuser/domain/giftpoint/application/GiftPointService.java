@@ -21,10 +21,10 @@ public interface GiftPointService {
     void giveGiftPoint(GiftPointRequestDto requestDto, String uuid);
 
     // 3. 포인트 선물받기
-    void acceptGiftPoint(GiftPointAcceptDto responseDto, String uuid);
+    void acceptGiftPoint(GiftPointAcceptRequestDto responseDto, String uuid);
 
     // 4. 포인트 선물받기(거절)
-    void refuseGiftPoint(GiftPointRefuseDto refuseDto, String uuid);
+    void refuseGiftPoint(GiftPointRefuseRequestDto refuseDto, String uuid);
 
     // 5. 포인트 선물 대기리스트 조회
     GiftPointWaitListDto getGiftWaitList(String uuid);

@@ -12,20 +12,20 @@ import java.util.Optional;
 @Repository
 public interface GiftPointRepository extends JpaRepository<GiftPoint, Long> {
     /**
-     * 1. receiverUUID, createAt으로, giftPoint 조회
+     * 1. receiverUUID, receivePointId 로, giftPoint 조회
      * 2. receiverUUID, success로, giftPoint 조회
-     * 3. giverUUID, createAt으로, giftPoint 조회
+     * 3. giverUUID, givePointId 로, giftPoint 조회
      * 4.
      */
 
-    // 1. receiverUUID, createAt으로, 선물 조회
-    Optional<GiftPoint> findByReceiverUUIDAndCreateAt(String receiverUUID, LocalDateTime createAt);
+    // 1. receiverUUID, receivePointId 로, 선물 조회
+    Optional<GiftPoint> findByReceiverUUIDAndReceivePointId(String receiverUUID, Long receivePointId);
 
     // 2. receiverUUID, success로, giftPoint 조회
     List<GiftPoint> findByReceiverUUIDAndStatusOrderByCreateAtAsc(String uuid, GiftStatus status);
 
     // 3. giverUUID, createAt으로, 선물 조회
-    Optional<GiftPoint> findByGiverUUIDAndCreateAt(String uuid, LocalDateTime createAt);
+    Optional<GiftPoint> findByGiverUUIDAndGivePointId(String uuid, Long givePointId);
 
 
 }

@@ -1,6 +1,7 @@
 package ssgssak.ssgpointuser.domain.giftpoint.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class GiftPointServiceImpl implements GiftPointService{
     private final GiftPointRepository giftPointRepository;
     private final ModelMapper modelMapper;
@@ -46,9 +48,9 @@ public class GiftPointServiceImpl implements GiftPointService{
 
     // 3. 포인트 선물받기(수락)
     @Override
-    public void acceptGiftPoint(GiftPointAcceptDto acceptDto, String receiverUUID) {
+    public void acceptGiftPoint(GiftPointAcceptRequestDto acceptDto, String receiverUUID) {
         acceptDto = acceptDto.toBuilder().receiverUUID(receiverUUID).build();
-        GiftPoint giftPoint = giftPointRepository.findByReceiverUUIDAndCreateAt(receiverUUID, acceptDto.getCreateAt())
+        GiftPoint giftPoint = giftPointRepository.findById(acceptDto.getGiftPointId())
                 .orElseThrow(()-> new NoSuchElementException("해당 값이 존재하지 않습니다"));
         giftPoint.setGiveAndReceivePointId(acceptDto.getGivePointId(), acceptDto.getReceivePointId());
         giftPoint.updateStatus(GiftStatus.ACCEPT);
@@ -56,8 +58,8 @@ public class GiftPointServiceImpl implements GiftPointService{
 
     // 4. 포인트 선물받기(거절)
     @Override
-    public void refuseGiftPoint(GiftPointRefuseDto refuseDto, String receiverUUID) {
-        GiftPoint giftPoint = giftPointRepository.findByReceiverUUIDAndCreateAt(receiverUUID, refuseDto.getCreateAt())
+    public void refuseGiftPoint(GiftPointRefuseRequestDto refuseDto, String receiverUUID) {
+        GiftPoint giftPoint = giftPointRepository.findById(refuseDto.getGiftPointId())
                 .orElseThrow(()-> new NoSuchElementException("해당 값이 존재하지 않습니다"));
         giftPoint.updateStatus(GiftStatus.REFUSE);
     }
@@ -77,21 +79,26 @@ public class GiftPointServiceImpl implements GiftPointService{
     public GiftPointGetResponseDto getGiftList(GiftPointGetRequestDto requestDto, String uuid) {
         GiftPoint giftPoint = null;
         String userUUID = null;
+        // used == true라면 pointId는 givePointId, used==false라면 uuid는 receivePointId가 된다
+        Long pointId = requestDto.getPointId();
         // 보낸 선물 조회
         if (requestDto.getUsed() == true) {
-            giftPoint = giftPointRepository.findByGiverUUIDAndCreateAt(uuid, requestDto.getCreateAt())
+            Long givePointId = pointId;
+            giftPoint = giftPointRepository.findByGiverUUIDAndGivePointId(uuid, givePointId)
                     .orElseThrow(() -> new NoSuchElementException());
             userUUID = giftPoint.getReceiverUUID();
         }
         // 받은 선물 조회
         else if (requestDto.getUsed() == false) {
-            giftPoint = giftPointRepository.findByReceiverUUIDAndCreateAt(uuid, requestDto.getCreateAt())
+            Long receivePointId = pointId;
+            giftPoint = giftPointRepository.findByReceiverUUIDAndReceivePointId(uuid, receivePointId)
                     .orElseThrow(() -> new NoSuchElementException());
             userUUID = giftPoint.getGiverUUID();
         }
         return GiftPointGetResponseDto.builder()
                 .message(giftPoint.getMessage())
                 .userUUID(userUUID)
+                .updateAt(giftPoint.getUpdatedAt())
                 .build();
     }
 

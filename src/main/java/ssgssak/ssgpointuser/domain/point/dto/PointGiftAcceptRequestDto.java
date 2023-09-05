@@ -11,7 +11,6 @@ import ssgssak.ssgpointuser.domain.point.entity.PointType;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PointGiftAcceptRequestDto {
-    private String receiverUUID;
     private String giverUUID;
     private Integer updatePoint;
     private PointType type = PointType.GIFT;

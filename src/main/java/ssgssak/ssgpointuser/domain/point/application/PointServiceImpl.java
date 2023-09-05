@@ -98,8 +98,7 @@ public class PointServiceImpl implements PointService {
 
     // 6. 포인트 선물받기(수락) -> 포인트 생성
     @Override
-    public PointGiftAcceptResponseDto receiveGiftPoint(PointGiftAcceptRequestDto requestDto) {
-        String receiverUUID = requestDto.getReceiverUUID();
+    public PointGiftAcceptResponseDto receiveGiftPoint(PointGiftAcceptRequestDto requestDto, String receiverUUID) {
         String giverUUID = requestDto.getGiverUUID();
 
         // giver 포인트 생성
