@@ -4,7 +4,6 @@ import ssgssak.ssgpointuser.domain.point.dto.*;
 import ssgssak.ssgpointuser.domain.point.entity.Point;
 import ssgssak.ssgpointuser.domain.point.entity.PointType;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,16 +36,10 @@ public interface PointService {
     Point createPoint(CreatePointDto dto, String uuid);
 
     // 4. 가맹점(스토어)로 적립
-    PointIdOutDto pointAddStore(CreatePointDto pointDto, String uuid);
-
-    // 5. 제휴사(파트너)로 적립
-    PointIdOutDto pointAddPartner(CreatePointDto pointDto, String uuid);
+    PointIdOutDto pointAdd(CreatePointDto pointDto, String uuid);
 
     // 6. 포인트 선물받기(수락) -> 포인트 생성
     PointGiftAcceptResponseDto receiveGiftPoint(PointGiftAcceptRequestDto requestDto, String receiverUUID);
-
-    // 7. 포인트 전환하기
-    PointIdOutDto pointExchange(CreatePointDto pointDto, String uuid);
 
     // 8. 포인트 조회하기
     PointListResponseDto pointSearch(PointListRequestDto requestDto, String uuid);
