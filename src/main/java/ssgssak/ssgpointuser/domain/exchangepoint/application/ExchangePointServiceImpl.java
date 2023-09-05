@@ -3,12 +3,14 @@ package ssgssak.ssgpointuser.domain.exchangepoint.application;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ssgssak.ssgpointuser.domain.exchangepoint.dto.ExchangeAddDto;
 import ssgssak.ssgpointuser.domain.exchangepoint.entity.ExchangePoint;
 import ssgssak.ssgpointuser.domain.exchangepoint.infrastructure.ExchangePointRepository;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ExchangePointServiceImpl implements ExchangePointService{
 
     private final ExchangePointRepository exchangePointRepository;

@@ -36,7 +36,7 @@ public interface PointService {
     // 3. 포인트 생성
     Point createPoint(CreatePointDto dto, String uuid);
 
-    // 4. 가맹점(스토어)로 적립 //todo: 모든 적립 vo를 createPoint dto로 바꾸면됨
+    // 4. 가맹점(스토어)로 적립
     PointIdOutDto pointAddStore(CreatePointDto pointDto, String uuid);
 
     // 5. 제휴사(파트너)로 적립

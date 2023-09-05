@@ -47,6 +47,7 @@ public class EventPointServiceImpl implements EventPointService {
 
     // 3. 어제자 출석체크 포인트 조회
     @Override
+    @Transactional(readOnly = true)
     public AttendancePointGetResponseDto getYesterdayAttendancePoint(Long pointId) {
         LocalDateTime yesterday = LocalDate.now().minusDays(1).atStartOfDay();
         LocalDateTime today = LocalDate.now().atStartOfDay();

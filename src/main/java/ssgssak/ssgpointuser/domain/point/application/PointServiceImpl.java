@@ -43,6 +43,7 @@ public class PointServiceImpl implements PointService {
 
     // 1. 유저 기존 totalPoint 조회
     @Override
+    @Transactional(readOnly = true)
     public Integer getTotalPoint(String uuid) {
         Optional<Point> point = pointRepository.findFirstByUserUUIDOrderByCreateAtDesc(uuid);
         if (point.isPresent()) {
@@ -73,7 +74,7 @@ public class PointServiceImpl implements PointService {
         return point;
     }
 
-    // 4. 가맹점(스토어)로 적립 //todo: 모든 적립 vo를 createPoint dto로 바꾸면됨
+    // 4. 가맹점(스토어)로 적립
     @Override
     public PointIdOutDto pointAddStore(CreatePointDto pointDto, String uuid) {
         // 포인트 계산
@@ -139,8 +140,9 @@ public class PointServiceImpl implements PointService {
         return PointIdOutDto.builder().pointId(pointId).build();
     }
 
-    // 8. 포인트 조회하기 todo: startDay와 endDay 타입변경하기, 컨트롤러에서
+    // 8. 포인트 조회하기
     @Override
+    @Transactional(readOnly = true)
     public PointListResponseDto pointSearch(PointListRequestDto requestDto, String uuid) {
         LocalDateTime startDay = requestDto.getStartDay();
         LocalDateTime endDay = requestDto.getEndDay();
@@ -209,6 +211,7 @@ public class PointServiceImpl implements PointService {
 
     // 9. 사용가능 포인트 조회
     @Override
+    @Transactional(readOnly = true)
     public PointPossibleResponseDto searchPossible(String uuid) {
         //todo: 일단 totalpoint를 return해주는데, 나중에 적립예정을 빼고 보내야함
         return PointPossibleResponseDto.builder()
@@ -263,6 +266,7 @@ public class PointServiceImpl implements PointService {
 
     // 12. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
     @Override
+    @Transactional(readOnly = true)
     public CheckDuplicateDto checkDuplicate(String uuid, PointType type) {
         LocalDateTime stt = LocalDate.now().atStartOfDay(); // 오늘
         LocalDateTime end = LocalDate.now().plusDays(1).atStartOfDay(); // 내일
@@ -282,6 +286,7 @@ public class PointServiceImpl implements PointService {
 
     // 13. 어제의 출석체크 유무 조회
     @Override
+    @Transactional(readOnly = true)
     public Boolean yesterdayAttendance(String uuid) {
         LocalDateTime yesterdayStart = LocalDate.now().minusDays(1).atStartOfDay();
         LocalDateTime yesterdayEnd = LocalDate.now().atStartOfDay();

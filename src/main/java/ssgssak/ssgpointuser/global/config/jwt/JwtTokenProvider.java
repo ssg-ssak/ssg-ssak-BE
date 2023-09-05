@@ -77,15 +77,20 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // 5,6. override하여 토큰 생성 todo: generateToken을 왜 두번 사용하는건지 모르겠음
+    // 5,6. 메소드 오버로딩으로 토큰 생성
+    /* : 외부적으로는 userDetails를 받아 첫 번째 메소드를 실행시키고, 내부적으로는 첫 번째 메소드에서 두 번째 메소드를 사용한다
+         두 번째 메소드는 setClaims, 즉 추가적인 정보를 token의 payload에 넣어주고 싶을 때, 원하는 값을 key-value로 넣어주면 된다!
+         만약 추가 정보가 없다면 그냥 비어있는 Map.of()값을 넣어주면 된다!
+         현재는 확장성을 위해서 구현만 해두었을 뿐, 추가적으로 넣는 값은 없다
+     * 메소드 오버로딩 : 같은 이름의 메소드를 여러 개 가지면서, 매개변수의 유형과 개수가 다르도록 하는 기능
+    */
     public String generateToken(CustomUserDetails userDetails) {
         return generateToken(Map.of(), userDetails);
     }
 
     public String generateToken(
             Map<String, Objects> extractClaims,
-            CustomUserDetails userDetails
-    ) {
+            CustomUserDetails userDetails) {
         return Jwts.builder()
                 // claims 설정
                 .setClaims(extractClaims)

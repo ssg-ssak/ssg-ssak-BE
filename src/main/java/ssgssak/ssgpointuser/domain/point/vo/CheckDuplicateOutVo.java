@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CheckDuplicateOutVo { //todo: outVo에 getter 사용안해봤는데, 잘 된다면 다른곳도 바꾸기 -> Getter 꼭 사용해야한다!
+public class CheckDuplicateOutVo { //outVo에는 Getter 꼭 사용해야한다!
     private Boolean duplicate;
 }
