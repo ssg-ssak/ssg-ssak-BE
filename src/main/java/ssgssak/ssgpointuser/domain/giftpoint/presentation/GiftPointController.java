@@ -39,13 +39,13 @@ public class GiftPointController {
     // 2. 포인트 선물받기(수락)
     @PutMapping("/accept")
     public void acceptGiftPoint(@RequestBody GiftPointAcceptInVo acceptInVo, Principal principal) {
-        giftPointService.acceptGiftPoint(modelMapper.map(acceptInVo, GiftPointAcceptDto.class), principal.getName());
+        giftPointService.acceptGiftPoint(modelMapper.map(acceptInVo, GiftPointAcceptRequestDto.class), principal.getName());
     }
 
     // 3. 포인트 선물받기(거절)
     @PutMapping("/refuse")
     public void refuseGiftPoint(@RequestBody GiftPointRefuseInVo refuseInVo, Principal principal) {
-        giftPointService.refuseGiftPoint(modelMapper.map(refuseInVo, GiftPointRefuseDto.class), principal.getName());
+        giftPointService.refuseGiftPoint(modelMapper.map(refuseInVo, GiftPointRefuseRequestDto.class), principal.getName());
     }
 
     // 4. 포인트 선물 대기리스트 조회
@@ -57,7 +57,7 @@ public class GiftPointController {
 
     // 5. 선물 포인트 조회
     @GetMapping("")
-    public ResponseEntity<GiftPointGetOutVo> getGiftPoint(@RequestParam GiftPointGetInVo getInVo, Principal principal) {
+    public ResponseEntity<GiftPointGetOutVo> getGiftPoint(GiftPointGetInVo getInVo, Principal principal) {
         GiftPointGetResponseDto requestDto = giftPointService.getGiftList(modelMapper.map(getInVo, GiftPointGetRequestDto.class), principal.getName());
         GiftPointGetOutVo getOutVo = modelMapper.map(requestDto, GiftPointGetOutVo.class);
         return new ResponseEntity<>(getOutVo, HttpStatus.OK);

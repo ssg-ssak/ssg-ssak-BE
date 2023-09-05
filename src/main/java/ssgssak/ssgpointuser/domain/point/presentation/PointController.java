@@ -57,9 +57,9 @@ public class PointController {
 
     // 3. 포인트 선물받기 -> 진행이후 선물포인트에 POST, "/gift/accept"로 요청이 들어가는것가지가 한세트임
     @PostMapping("/gift/receive")
-    public ResponseEntity<PointGiftAcceptOutVo> receivePoint(@RequestBody PointGiftAcceptInVo inVo) {
+    public ResponseEntity<PointGiftAcceptOutVo> receivePoint(@RequestBody PointGiftAcceptInVo inVo, Principal principal) {
         PointGiftAcceptResponseDto responseDto = pointService.receiveGiftPoint(
-                modelMapper.map(inVo, PointGiftAcceptRequestDto.class));
+                modelMapper.map(inVo, PointGiftAcceptRequestDto.class), principal.getName());
         PointGiftAcceptOutVo outVo = modelMapper.map(responseDto, PointGiftAcceptOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }

@@ -43,7 +43,7 @@ public interface PointService {
     PointIdOutDto pointAddPartner(CreatePointDto pointDto, String uuid);
 
     // 6. 포인트 선물받기(수락) -> 포인트 생성
-    PointGiftAcceptResponseDto receiveGiftPoint(PointGiftAcceptRequestDto requestDto);
+    PointGiftAcceptResponseDto receiveGiftPoint(PointGiftAcceptRequestDto requestDto, String receiverUUID);
 
     // 7. 포인트 전환하기
     PointIdOutDto pointExchange(CreatePointDto pointDto, String uuid);

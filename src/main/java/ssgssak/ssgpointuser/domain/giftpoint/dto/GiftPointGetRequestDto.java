@@ -1,9 +1,6 @@
 package ssgssak.ssgpointuser.domain.giftpoint.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +8,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class GiftPointGetRequestDto {
     private Boolean used;
-    private LocalDateTime createAt;
+    private Long pointId; // used == true라면 pointId는 givePointId, used==false라면 uuid는 receivePointId
 }

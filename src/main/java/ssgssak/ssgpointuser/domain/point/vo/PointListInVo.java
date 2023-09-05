@@ -19,9 +19,11 @@ public class PointListInVo {
     private LocalDateTime endDay;
 
     // Setter를 사용하지 않으려면 생성자가 필수이다
-    public PointListInVo(PointType type, Boolean used, LocalDateTime startDay, LocalDateTime endDay) {
+
+    public PointListInVo(PointType type, Boolean used, Boolean isEvent, LocalDateTime startDay, LocalDateTime endDay) {
         this.type = type;
         this.used = used;
+        this.isEvent = isEvent;
         this.startDay = startDay;
         this.endDay = endDay;
     }

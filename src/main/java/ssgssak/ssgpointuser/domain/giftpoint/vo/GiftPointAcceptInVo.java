@@ -9,11 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class GiftPointAcceptInVo {
+    private Long giftPointId;
     private Long givePointId;
     private Long receivePointId;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime createAt;
 }
 
 
