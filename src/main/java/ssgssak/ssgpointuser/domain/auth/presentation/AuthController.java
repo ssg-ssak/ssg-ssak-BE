@@ -7,14 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssgssak.ssgpointuser.domain.auth.application.AuthServiceImpl;
-import ssgssak.ssgpointuser.domain.auth.dto.AuthDeactivateSignUpDto;
-import ssgssak.ssgpointuser.domain.auth.dto.AuthLoginRequestDto;
-import ssgssak.ssgpointuser.domain.auth.dto.AuthLoginResponseDto;
-import ssgssak.ssgpointuser.domain.auth.dto.AuthSignUpDto;
-import ssgssak.ssgpointuser.domain.auth.vo.AuthDeactivateSignUpVo;
-import ssgssak.ssgpointuser.domain.auth.vo.AuthLoginInVo;
-import ssgssak.ssgpointuser.domain.auth.vo.AuthLoginOutVo;
-import ssgssak.ssgpointuser.domain.auth.vo.AuthSignUpVo;
+import ssgssak.ssgpointuser.domain.auth.dto.*;
+import ssgssak.ssgpointuser.domain.auth.vo.*;
 
 import java.security.Principal;
 
@@ -31,6 +25,7 @@ public class AuthController {
      * 1. 회원가입
      * 2. 회원탈퇴
      * 3. 로그인
+     * 4. 아이디 찾기
      */
 
     // 1. 회원가입
@@ -57,4 +52,11 @@ public class AuthController {
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 
+    // 4. 아이디 찾기
+    @GetMapping("/login-id")
+    public ResponseEntity<AuthGetLoginIdOutVo> getLoginId(AuthGetLoginIdInVo inVo) {
+        AuthGetLoginIdResponseDto responseDto = authService.getLoginId(modelMapper.map(inVo, AuthGetLoginIdRequestDto.class));
+        AuthGetLoginIdOutVo outVo = modelMapper.map(responseDto, AuthGetLoginIdOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
+    }
 }

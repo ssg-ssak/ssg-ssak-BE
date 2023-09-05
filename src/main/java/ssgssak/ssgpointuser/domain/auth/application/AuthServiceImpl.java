@@ -8,10 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ssgssak.ssgpointuser.domain.auth.dto.AuthDeactivateSignUpDto;
-import ssgssak.ssgpointuser.domain.auth.dto.AuthLoginRequestDto;
-import ssgssak.ssgpointuser.domain.auth.dto.AuthLoginResponseDto;
-import ssgssak.ssgpointuser.domain.auth.dto.AuthSignUpDto;
+import ssgssak.ssgpointuser.domain.auth.dto.*;
 import ssgssak.ssgpointuser.domain.auth.entity.CustomUserDetails;
 import ssgssak.ssgpointuser.domain.user.entity.User;
 import ssgssak.ssgpointuser.domain.user.infrastructure.UserRepository;
@@ -40,9 +37,18 @@ public class AuthServiceImpl implements AuthService {
      * auth
      * 1. 로그인
      * 2. 회원가입
+     * 3. 바코드 넘버 생성
+     * 4. 바코드 넘버 중복확인
+     * 5. UUID 생성
+     * 6. UUID 중복 확인
+     * 7. 회원 탈퇴
+     * 8. 패스워드 일치 검사
+     * 9. uuid로 유저 조회
+     * 10. 유저 이름, 휴대폰 번호로 유저 Login Id 조회
      */
 
     // 1. 로그인
+    @Override
     public AuthLoginResponseDto userLogin(AuthLoginRequestDto requestDto) {
         // authenticationManager에서 입력받은 id,pw로 인증을 진행함
         try {
@@ -67,6 +73,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * 회원가입
      */
+    @Override
     public void signUp(AuthSignUpDto authSignUpDto) {
         String newUUID = generateUUID();
         // 비밀번호 해싱
@@ -92,6 +99,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * 바코드 넘버 생성
      */
+    @Override
     public String generateBarcodeNumber(String id) {
         Random random = new Random();
         int length = id.length();
@@ -167,6 +175,7 @@ public class AuthServiceImpl implements AuthService {
      * 패스워드 일치 검사
      */
     @Override
+    @Transactional(readOnly = true)
     public boolean validateUserPassword(String userPassword, String uuid) {
         User user = getUserByUUID(uuid);
         if (user.getUserPassword().equals(userPassword)) {
@@ -180,9 +189,19 @@ public class AuthServiceImpl implements AuthService {
      * uuid로 유저 조회
      */
     @Override
+    @Transactional(readOnly = true)
     public User getUserByUUID(String uuid) {
         User user = userRepository.findUserByUserUUID(uuid)
                 .orElseThrow(() -> new NoSuchElementException("해당하는 유저가 없습니다"));
         return user;
+    }
+
+    // 10. 유저 이름, 휴대폰 번호로 유저 Login Id 조회
+    @Override
+    @Transactional(readOnly = true)
+    public AuthGetLoginIdResponseDto getLoginId(AuthGetLoginIdRequestDto requestDto) {
+        User user = userRepository.findByUserNameAndPhoneNumber(requestDto.getUserName(), requestDto.getPhoneNumber())
+                .orElseThrow(() -> new NoSuchElementException("해당하는 유저가 없습니다"));
+        return AuthGetLoginIdResponseDto.builder().loginId(user.getUserId()).build();
     }
 }
