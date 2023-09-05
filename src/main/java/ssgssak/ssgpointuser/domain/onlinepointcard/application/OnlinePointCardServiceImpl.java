@@ -36,6 +36,7 @@ public class OnlinePointCardServiceImpl implements OnlinePointCardService {
 
     // 2. 카드 조회
     @Override
+    @Transactional(readOnly = true)
     public OnlinePointCardGetResponseDto getCardList(String uuid) {
         // 카드의 모든 정보를 담고있는 리스트
         List<OnlinePointCard> originList = onlinePointCardRepository.findAllByUserUUID(uuid);

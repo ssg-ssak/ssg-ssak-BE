@@ -46,7 +46,7 @@ public class User extends BaseTimeEntity {
     @Column(length = 100)
     private String pointPassword;
 
-    //todo: 생성로직을 짜보기, 16자리중 앞에 6개정도는 그냥 써도됨, id를 포함해서 해보자!
+    //바코드넘버 : 935012 + (String)userId의 절반은 앞에, 절반은 맨뒤에 + 가운데는 랜덤숫자 : 총 16숫자
     @Column(unique = true, nullable = false, length = 16)
     private String barcodeNumber;
 

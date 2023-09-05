@@ -66,6 +66,7 @@ public class GiftPointServiceImpl implements GiftPointService{
 
     // 5. 포인트 선물 대기리스트 조회 todo: 포인트 대기 15일 이후에는 자동 거절 되어야함
     @Override
+    @Transactional(readOnly = true)
     public GiftPointWaitListDto getGiftWaitList(String uuid) {
         List<GiftPoint> waitList = giftPointRepository.findByReceiverUUIDAndStatusOrderByCreateAtAsc(uuid, GiftStatus.WAIT);
         GiftPointWaitListDto waitListDto = GiftPointWaitListDto.builder()
@@ -76,6 +77,7 @@ public class GiftPointServiceImpl implements GiftPointService{
 
     // 6. 선물 포인트 조회(uuid & 생성날짜, 사용유무로 판단)
     @Override
+    @Transactional(readOnly = true)
     public GiftPointGetResponseDto getGiftList(GiftPointGetRequestDto requestDto, String uuid) {
         GiftPoint giftPoint = null;
         String userUUID = null;

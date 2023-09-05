@@ -74,7 +74,7 @@ public class PointController {
     }
 
     // 5. 포인트 기간별로 조회하기
-    @GetMapping("/list") // todo: vo로 받아오기
+    @GetMapping("/list")
     public ResponseEntity<PointListOutVo> searchPointList(PointListInVo inVo, Principal principal) {
         PointListRequestDto requestDto = modelMapper.map(inVo, PointListRequestDto.class);
         PointListResponseDto responseDto = pointService.pointSearch(requestDto, principal.getName());

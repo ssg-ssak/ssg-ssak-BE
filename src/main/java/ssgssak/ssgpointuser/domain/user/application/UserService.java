@@ -1,11 +1,10 @@
 package ssgssak.ssgpointuser.domain.user.application;
 
-import ssgssak.ssgpointuser.domain.user.dto.UserPhoneSearchDto;
+import ssgssak.ssgpointuser.domain.user.dto.UserPhoneSearchResponseDto;
 import ssgssak.ssgpointuser.domain.user.dto.UserUpdateInfoDto;
 import ssgssak.ssgpointuser.domain.user.dto.UserUpdatePwDto;
 import ssgssak.ssgpointuser.domain.user.dto.UserUpdatePointPwDto;
 import ssgssak.ssgpointuser.domain.user.entity.User;
-import ssgssak.ssgpointuser.domain.user.vo.UserPhoneSearchingOutVo;
 
 
 public interface UserService {
@@ -20,5 +19,5 @@ public interface UserService {
     User getUserByUUID(String userUUID);
 
     // 5. 유저 휴대폰 번호로 조회
-    UserPhoneSearchingOutVo searchPhoneNumber(String phoneNumber, String name);
+    UserPhoneSearchResponseDto searchPhoneNumber(String phoneNumber, String name);
 }

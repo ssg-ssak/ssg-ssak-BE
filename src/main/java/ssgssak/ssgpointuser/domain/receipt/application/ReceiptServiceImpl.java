@@ -3,6 +3,7 @@ package ssgssak.ssgpointuser.domain.receipt.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ssgssak.ssgpointuser.domain.receipt.dto.ReceiptGetRequestDto;
 import ssgssak.ssgpointuser.domain.receipt.dto.ReceiptGetResponseDto;
 import ssgssak.ssgpointuser.domain.receipt.dto.ReceiptSaveRequestDto;
@@ -25,6 +26,7 @@ public class ReceiptServiceImpl implements ReceiptService{
      * 2. 영수증 id로, 영수증 조회
      */
 
+    // 1. 영수증 저장
     @Override
     public ReceiptSaveResponseDto saveReceipt(ReceiptSaveRequestDto requestDto) {
         Receipt receipt = Receipt.builder().receiptNumber(requestDto.getReceiptNumber()).build();
@@ -32,7 +34,9 @@ public class ReceiptServiceImpl implements ReceiptService{
         return ReceiptSaveResponseDto.builder().receiptId(receipt.getId()).build();
     }
 
+    // 2. 영수증 id로, 영수증 조회
     @Override
+    @Transactional(readOnly = true)
     public ReceiptGetResponseDto getReceipt(ReceiptGetRequestDto requestDto) {
         log.info("id : "+requestDto.getReceiptId());
         Receipt receipt = receiptRepository.findById(requestDto.getReceiptId())

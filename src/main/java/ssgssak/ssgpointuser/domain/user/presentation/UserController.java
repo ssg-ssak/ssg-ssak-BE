@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssgssak.ssgpointuser.domain.user.application.UserServiceImpl;
-import ssgssak.ssgpointuser.domain.user.dto.UserPhoneSearchDto;
+import ssgssak.ssgpointuser.domain.user.dto.UserPhoneSearchResponseDto;
 import ssgssak.ssgpointuser.domain.user.dto.UserUpdateInfoDto;
 import ssgssak.ssgpointuser.domain.user.dto.UserUpdatePwDto;
 import ssgssak.ssgpointuser.domain.user.vo.*;
@@ -56,10 +56,11 @@ public class UserController {
     }
 
     // 4. 휴대폰 번호로 유저 조회
-    @GetMapping("/search/phone")
+    @GetMapping("/by/phone")
     public ResponseEntity<UserPhoneSearchingOutVo> searchingPhoneNum(@RequestParam String phoneNumber,
                                                                      @RequestParam String userName) {
-        UserPhoneSearchingOutVo outVo = userService.searchPhoneNumber(phoneNumber, userName);
+        UserPhoneSearchResponseDto responseDto = userService.searchPhoneNumber(phoneNumber, userName);
+        UserPhoneSearchingOutVo outVo = modelMapper.map(responseDto, UserPhoneSearchingOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 }
