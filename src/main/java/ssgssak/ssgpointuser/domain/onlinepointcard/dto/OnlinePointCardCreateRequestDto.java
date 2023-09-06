@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ssgssak.ssgpointuser.domain.onlinepointcard.entity.OnlinePointCardIssuer;
 
 @Getter
 @Builder(toBuilder = true)
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OnlinePointCardCreateRequestDto {
     private String cardNumber;
-    private String issuer;
+    private OnlinePointCardIssuer issuer;
     private String cvc;
     private String userUUID;
 }

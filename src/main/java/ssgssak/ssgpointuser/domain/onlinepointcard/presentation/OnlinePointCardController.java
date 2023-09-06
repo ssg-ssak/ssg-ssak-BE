@@ -16,7 +16,7 @@ import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/online-p-card")
+@RequestMapping("/api/v1/pointcard/online")
 @Slf4j
 public class OnlinePointCardController {
     private final OnlinePointCardServiceImpl onlinePointCardService;
