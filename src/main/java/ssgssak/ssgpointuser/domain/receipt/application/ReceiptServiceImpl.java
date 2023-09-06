@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ssgssak.ssgpointuser.domain.receipt.dto.ReceiptGetRequestDto;
 import ssgssak.ssgpointuser.domain.receipt.dto.ReceiptGetResponseDto;
 import ssgssak.ssgpointuser.domain.receipt.dto.ReceiptSaveRequestDto;
 import ssgssak.ssgpointuser.domain.receipt.dto.ReceiptSaveResponseDto;
@@ -16,7 +15,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ReceiptServiceImpl implements ReceiptService{
+public class ReceiptServiceImpl implements ReceiptService {
 
     private final ReceiptRepository receiptRepository;
 
@@ -37,9 +36,17 @@ public class ReceiptServiceImpl implements ReceiptService{
     // 2. 영수증 id로, 영수증 조회
     @Override
     @Transactional(readOnly = true)
-    public ReceiptGetResponseDto getReceipt(ReceiptGetRequestDto requestDto) {
-        log.info("id : "+requestDto.getReceiptId());
-        Receipt receipt = receiptRepository.findById(requestDto.getReceiptId())
+    public ReceiptGetResponseDto getReceiptById(Long receiptId) {
+        Receipt receipt = receiptRepository.findById(receiptId)
+                .orElseThrow(() -> new NoSuchElementException());
+        return ReceiptGetResponseDto.builder().receipt(receipt).build();
+    }
+
+    // 3. 영수증 번호로, 영수증 조회
+    @Override
+    @Transactional(readOnly = true)
+    public ReceiptGetResponseDto getReceiptByNumber(String receiptNumber) {
+        Receipt receipt = receiptRepository.findByReceiptNumber(receiptNumber)
                 .orElseThrow(() -> new NoSuchElementException());
         return ReceiptGetResponseDto.builder().receipt(receipt).build();
     }

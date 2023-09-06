@@ -28,16 +28,14 @@ public class PointServiceImpl implements PointService {
      * 1. 유저 기존 totalPoint 조회
      * 2. 포인트 사용/적립 계산
      * 3. 포인트 생성
-     * 4. 가맹점(스토어)로 적립
-     * 5. 제휴사(파트너)로 적립
-     * 6. 포인트 선물받기(수락) -> 포인트 2개 생성
-     * 7. 포인트 전환하기
-     * 8. 포인트 조회하기
-     * 9. 사용가능 포인트 조회
-     * 10. 기간별 적립한/사용한 포인트 계산
-     * 11. 이벤트 포인트 적립
-     * 12. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
-     * 13. 출석체크 연속 확인하기 (어제부터 9일전까지 출석이 9번이라면, 오늘이 10번째임 -> 추가포인트 지급)
+     * 4. 타입별 포인트 적립 -> 스토어, 파트너, 전환, 영수증을 모두 통합해서 사용
+     * 5. 포인트 선물받기(수락) -> 포인트 2개 생성
+     * 6. 포인트 조회하기
+     * 7. 사용가능 포인트 조회
+     * 8. 기간별 적립한/사용한 포인트 계산
+     * 9. 이벤트 포인트 적립
+     * 10. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
+     * 11. 출석체크 연속 확인하기 (어제부터 9일전까지 출석이 9번이라면, 오늘이 10번째임 -> 추가포인트 지급)
      */
 
 
@@ -74,9 +72,9 @@ public class PointServiceImpl implements PointService {
         return point;
     }
 
-    // 4. 가맹점(스토어)로 적립
+    // 4. 타입별, 포인트 적립
     @Override
-    public PointIdOutDto pointAddStore(CreatePointDto pointDto, String uuid) {
+    public PointIdOutDto pointAdd(CreatePointDto pointDto, String uuid) {
         // 포인트 계산
         Point point = createPoint(pointDto, uuid);
         pointRepository.save(point);
@@ -85,19 +83,7 @@ public class PointServiceImpl implements PointService {
         return PointIdOutDto.builder().pointId(pointId).build();
     }
 
-    // 5. 제휴사(파트너)로 적립
-    @Override
-    public PointIdOutDto pointAddPartner(CreatePointDto pointDto, String uuid) {
-        // 포인트 계산
-        Point point = createPoint(pointDto, uuid);
-        pointRepository.save(point);
-        Long pointId = point.getId();
-
-        return PointIdOutDto.builder().pointId(pointId).build();
-    }
-
-
-    // 6. 포인트 선물받기(수락) -> 포인트 생성
+    // 5. 포인트 선물받기(수락) -> 포인트 생성
     @Override
     public PointGiftAcceptResponseDto receiveGiftPoint(PointGiftAcceptRequestDto requestDto, String receiverUUID) {
         String giverUUID = requestDto.getGiverUUID();
@@ -124,23 +110,7 @@ public class PointServiceImpl implements PointService {
                 .build();
     }
 
-    // 7. 포인트 전환하기
-    @Override
-    public PointIdOutDto pointExchange(CreatePointDto pointDto, String uuid) {
-        // 포인트 생성
-        Integer updateTotalPoint = calcTotalPoint(pointDto.getUsed(), getTotalPoint(uuid), pointDto.getUpdatePoint());
-        pointDto = pointDto.toBuilder()
-                .type(PointType.EXCHANGE)
-                .totalPoint(updateTotalPoint)
-                .build();
-        Point point = createPoint(pointDto, uuid);
-        pointRepository.save(point);
-        Long pointId = point.getId();
-
-        return PointIdOutDto.builder().pointId(pointId).build();
-    }
-
-    // 8. 포인트 조회하기
+    // 6. 포인트 조회하기
     @Override
     @Transactional(readOnly = true)
     public PointListResponseDto pointSearch(PointListRequestDto requestDto, String uuid) {
@@ -209,7 +179,7 @@ public class PointServiceImpl implements PointService {
                 .build();
     }
 
-    // 9. 사용가능 포인트 조회
+    // 7. 사용가능 포인트 조회
     @Override
     @Transactional(readOnly = true)
     public PointPossibleResponseDto searchPossible(String uuid) {
@@ -219,7 +189,7 @@ public class PointServiceImpl implements PointService {
                 .build();
     }
 
-    // 10. 기간별 적립한/사용한 포인트 계산
+    // 8. 기간별 적립한/사용한 포인트 계산
     @Override
     public HashMap<String, Integer> calcAddUsedPoint(List<Point> pointList) {
         HashMap<String, Integer> addUsedPointList = new HashMap<>();
@@ -236,7 +206,7 @@ public class PointServiceImpl implements PointService {
         return addUsedPointList;
     }
 
-    // 11. 이벤트 포인트 적립
+    // 9. 이벤트 포인트 적립
     @Override
     public PointEventOutDto pointAddEvent(CreatePointDto pointDto, String uuid, Integer continueDay) {
         // 출석체크 이벤트인 경우
@@ -264,7 +234,7 @@ public class PointServiceImpl implements PointService {
         return PointEventOutDto.builder().pointId(pointId).continueDay(continueDay).build();
     }
 
-    // 12. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
+    // 10. 이벤트 당일 중복확인 (오늘 날짜로 조회해서 있다면 중복이다)
     @Override
     @Transactional(readOnly = true)
     public CheckDuplicateDto checkDuplicate(String uuid, PointType type) {
@@ -284,7 +254,7 @@ public class PointServiceImpl implements PointService {
         return checkDuplicateDto;
     }
 
-    // 13. 어제의 출석체크 유무 조회
+    // 11. 어제의 출석체크 유무 조회
     @Override
     @Transactional(readOnly = true)
     public Boolean yesterdayAttendance(String uuid) {
@@ -297,6 +267,4 @@ public class PointServiceImpl implements PointService {
             return false;
         }
     }
-
-
 }
