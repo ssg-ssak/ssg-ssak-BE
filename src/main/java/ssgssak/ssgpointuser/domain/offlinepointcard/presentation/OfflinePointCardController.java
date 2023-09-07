@@ -37,7 +37,7 @@ public class OfflinePointCardController {
         offlinePointCardService.createCard(requestDto, principal.getName());
     }
 
-    //2. 오프라인카드 임시 발급(create) -> uuid를 넘겨주지 않음
+    //2. 오프라인카드 임시 발급(create) -> uuid를 넘겨주지 않음, 따라서 filter를 거치지 않아야함
     @PostMapping("/temp")
     public void createTempCard(@RequestBody OfflinePointCardCreateInVo inVo) {
         OfflinePointCardCreateRequestDto requestDto = modelMapper.map(inVo, OfflinePointCardCreateRequestDto.class);

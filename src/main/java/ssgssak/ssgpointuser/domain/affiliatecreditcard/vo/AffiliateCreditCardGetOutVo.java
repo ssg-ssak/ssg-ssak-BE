@@ -1,9 +1,10 @@
-package ssgssak.ssgpointuser.domain.affiliatecreditcard.dto;
+package ssgssak.ssgpointuser.domain.affiliatecreditcard.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ssgssak.ssgpointuser.domain.affiliatecreditcard.entity.AffiliateCreditCard;
 
 import java.util.List;
 
@@ -11,6 +12,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AffiliateCreditCardGetResponseDto {
+public class AffiliateCreditCardGetOutVo {
     private List cardDataList;
 }
