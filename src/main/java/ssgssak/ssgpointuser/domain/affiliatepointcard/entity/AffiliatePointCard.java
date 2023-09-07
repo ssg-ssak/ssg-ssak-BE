@@ -18,9 +18,12 @@ public class AffiliatePointCard extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String userUUID;
+    private String cardNumber;
 
     @Column(nullable = false)
+    private String userUUID;
+
+    @Enumerated(EnumType.STRING)
     private AffiliatePointCardType type;
 
     @Column

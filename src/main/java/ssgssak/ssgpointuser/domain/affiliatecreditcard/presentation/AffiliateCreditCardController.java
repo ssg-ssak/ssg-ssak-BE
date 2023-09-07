@@ -15,7 +15,7 @@ import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/pointcard/credit")
+@RequestMapping("/api/v1/creditcard")
 public class AffiliateCreditCardController {
     private final AffiliateCreditCardServiceImpl affiliateCreditCardService;
     private final ModelMapper modelMapper;
