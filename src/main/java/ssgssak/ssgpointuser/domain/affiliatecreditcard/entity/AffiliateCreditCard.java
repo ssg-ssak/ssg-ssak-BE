@@ -8,22 +8,24 @@ import lombok.NoArgsConstructor;
 import ssgssak.ssgpointuser.global.common.entity.BaseTimeEntity;
 
 @Entity
-@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class AffiliateCreditCard extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String userUUID;
+    private AffiliateCreditCardIssuer issuer;
 
     @Column(nullable = false)
-    private AffiliateCreditCardType type;
+    private String cardName;
 
     @Column
-    private String engName;
+    private String cardNumber;
 
+    @Column
+    private String userUUID;
 }

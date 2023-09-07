@@ -1,4 +1,4 @@
-package ssgssak.ssgpointuser.domain.onlinepointcard.dto;
+package ssgssak.ssgpointuser.domain.affiliatecreditcard.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OnlinePointCardGetResponseDto {
-    private List onlinePointCardList;
+public class AffiliateCreditCardGetResponseDto {
+    private List cardDataList;
 }

@@ -45,7 +45,7 @@ public class OnlinePointCardServiceImpl implements OnlinePointCardService {
         for (OnlinePointCard card : originList) {
             HashMap<String, String> data = new HashMap<>();
             data.put("cardNumber", card.getCardNumber());
-            data.put("issuer", card.getIssuer());
+            data.put("issuer", card.getIssuer().toString());
             data.put("createAt", card.getCreateAt().toString());
             onlinePointCardList.add(data);
         }

@@ -23,8 +23,8 @@ public class OnlinePointCard extends BaseTimeEntity {
     @Column
     private String cvc;
 
-    @Column
-    private String issuer;
+    @Enumerated(EnumType.STRING)
+    private OnlinePointCardIssuer issuer;
 
     @Column
     private String userUUID;
