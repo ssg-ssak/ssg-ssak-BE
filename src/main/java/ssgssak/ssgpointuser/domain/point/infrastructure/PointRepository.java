@@ -27,7 +27,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
      * 11. 어제의, 출석체크포인트를 검색
      */
 
-    // 1. 유저의 가장 최신 Point 조회
+    // 1. 유저의 가장 최신 Point 조회 todo: findTop 을 쓰면 된다는데 first랑 top의 차이를 알아봐야겠음, findTopBy~
     Optional<Point> findFirstByUserUUIDOrderByCreateAtDesc(String uuid);
 
     // 2. 기간별, 전체 타입을, 전체 사용유무로 조회

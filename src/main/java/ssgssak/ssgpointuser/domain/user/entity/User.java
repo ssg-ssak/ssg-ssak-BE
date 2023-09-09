@@ -46,7 +46,7 @@ public class User extends BaseTimeEntity {
     @Column(length = 100)
     private String pointPassword;
 
-    //바코드넘버 : 935012 + (String)userId의 절반은 앞에, 절반은 맨뒤에 + 가운데는 랜덤숫자 : 총 16숫자
+    //바코드넘버 : 935012 + (String)userId의 절반은 앞에, 절반은 맨뒤에 + 가운데는 랜덤숫자 : 총 16숫자 todo: 유저에는 바코드 번호가 없다..!
     @Column(unique = true, nullable = false, length = 16)
     private String barcodeNumber;
 

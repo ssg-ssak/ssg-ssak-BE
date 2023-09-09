@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ssgssak.ssgpointuser.domain.franchise.entity.Franchise;
 
 @Entity
 @Getter
@@ -24,5 +25,11 @@ public class Store {
     private String storeName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Franchisee franchisee;
+    private Franchise franchise;
+
+    // 실제 위치 정보 : 위도와 경도
+    @Column(nullable = false)
+    private Double latitude;
+    @Column(nullable = false)
+    private Double longitude;
 }
