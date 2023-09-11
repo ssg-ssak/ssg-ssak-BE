@@ -3,7 +3,7 @@ package ssgssak.ssgpointuser.domain.point.entity;
 import lombok.Getter;
 
 @Getter
-public enum PointType {
+public enum PointType { //todo: 소멸예정, 적립예정도 구분해야할듯? -> 포인트 타입으로 구분한건가 아니면 포인트에 필드 추가?
     STORE(false),
     GIFT(false),
     EXCHANGE(false),

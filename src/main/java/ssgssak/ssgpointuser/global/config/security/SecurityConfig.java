@@ -3,6 +3,7 @@ package ssgssak.ssgpointuser.global.config.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,6 +32,7 @@ public class SecurityConfig {
      *   기존의 WebSecurityConfigurerAdapter를 extends받는 방식에서
      *   SecurityFilterChain을 Bean등록해서 사용하는 방식으로 바뀜
      */
+    //todo : Redis로 jwt 관리하기
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -44,7 +46,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequest -> authorizeHttpRequest
                         .requestMatchers(org.springframework.web.cors.CorsUtils::isPreFlightRequest)
                         .permitAll()
-                        .requestMatchers("/api/v1/pointcard/offline/temp","/api/v1/auth/login-id","/api/v1/auth/sign-up","/api/v1/auth/log-in", "/swagger-ui/**", "/swagger-resources/**", "/api-docs/**")
+                        // RESTful 하게 구분되는 경우 -> HttpMethod 까지 적어줘야한다
+                        .requestMatchers(HttpMethod.GET, "/api/v1/franchise").permitAll() // 모든 가맹점 정보 조회
+                        // url이 특정지어지는 경우 -> HttpMethod를 적어줄 필요가 없다
+                        .requestMatchers(
+                                "/api/v1/store/region",
+                                "/api/v1/pointcard/offline/temp",   // 임시 카드 발급
+                                "/api/v1/auth/login-id",            // 로그인 아이디 찾기
+                                "/api/v1/auth/sign-up",             // 회원가입
+                                "/api/v1/auth/log-in",              // 로그인
+                                "/swagger-ui/**",                   // 스웨거
+                                "/swagger-resources/**",            // 스웨거
+                                "/api-docs/**")                     // 스웨거
                         .permitAll() // 위의 url은 모두 filter를 거치지 않음
                         .anyRequest().authenticated()) // 위의 url을 제외한 모든 url은 필터를 거쳐야함
                 // 폼 로그인 사용 안함

@@ -110,7 +110,7 @@ public class PointServiceImpl implements PointService {
                 .build();
     }
 
-    // 6. 포인트 조회하기
+    // 6. 포인트 조회하기 todo: 쿼리dsl 사용하고,https://spring.io/blog/2011/04/26/advanced-spring-data-jpa-specifications-and-querydsl 를 사용하면 null 들어오면 알아서 없애줌
     @Override
     @Transactional(readOnly = true)
     public PointListResponseDto pointSearch(PointListRequestDto requestDto, String uuid) {

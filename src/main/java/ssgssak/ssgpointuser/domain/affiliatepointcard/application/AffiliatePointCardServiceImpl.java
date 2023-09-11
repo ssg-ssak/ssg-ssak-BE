@@ -24,6 +24,7 @@ public class AffiliatePointCardServiceImpl implements AffiliatePointCardService{
      * 온라인 포인트카드
      * 1. 카드 등록
      * 2. 카드 조회 : uuid와 type에 해당하는 카드 조회
+     * todo: 중복검사기능, 수정기능 생성해야함
      */
 
     // 1. 카드 등록

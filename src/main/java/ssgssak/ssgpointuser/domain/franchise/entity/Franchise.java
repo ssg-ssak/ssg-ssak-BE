@@ -1,4 +1,4 @@
-package ssgssak.ssgpointuser.domain.store.entity;
+package ssgssak.ssgpointuser.domain.franchise.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,16 +11,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Franchisee {
+public class Franchise {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String franchiseeName;
+    private String name;
 
     @Column
     private String logoUrl;
 
+    @Column
+    private String homepageUrl;
 }
