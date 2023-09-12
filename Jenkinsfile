@@ -16,14 +16,14 @@ pipeline {
                     docker stop ssgpointapp || true
                     docker rm ssgpointapp || true
                     docker rmi ssgpoint_be || true
-                    docker build -t ssgpoint_be ./master
-                    docker build -t ssgpoint_be ./slave
+                    docker build -t ssgpoint_be_master ./ssgpoint-user/master
+                    docker build -t ssgpoint_be_slave ./ssgpoint-user/slave
                 '''
             }
         }
         stage('Deploy') {
             steps {
-                sh 'docker run -d —name ssgpointapp -p 8000:8000 ssgpoint_be'
+                sh 'docker run -d —name ssgpointapp -p 8000:8000 ssgpoint_be_master'
             }
         }
     }
