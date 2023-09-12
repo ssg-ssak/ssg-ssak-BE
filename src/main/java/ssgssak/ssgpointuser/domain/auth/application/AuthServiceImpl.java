@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
+@Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
@@ -73,6 +73,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * 회원가입
      */
+    @Transactional(readOnly = false)
     @Override
     public void signUp(AuthSignUpDto authSignUpDto) {
         String newUUID = generateUUID();
@@ -158,6 +159,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * 회원 탈퇴
      */
+    @Transactional(readOnly = false)
     @Override
     public void deactivateAccount(AuthDeactivateSignUpDto deactivateDto, String uuid) {
         User user = getUserByUUID(uuid);
@@ -175,7 +177,6 @@ public class AuthServiceImpl implements AuthService {
      * 패스워드 일치 검사
      */
     @Override
-    @Transactional(readOnly = true)
     public boolean validateUserPassword(String userPassword, String uuid) {
         User user = getUserByUUID(uuid);
         if (user.getUserPassword().equals(userPassword)) {
@@ -189,7 +190,6 @@ public class AuthServiceImpl implements AuthService {
      * uuid로 유저 조회
      */
     @Override
-    @Transactional(readOnly = true)
     public User getUserByUUID(String uuid) {
         User user = userRepository.findUserByUserUUID(uuid)
                 .orElseThrow(() -> new NoSuchElementException("해당하는 유저가 없습니다"));
@@ -198,7 +198,6 @@ public class AuthServiceImpl implements AuthService {
 
     // 10. 유저 이름, 휴대폰 번호로 유저 Login Id 조회
     @Override
-    @Transactional(readOnly = true)
     public AuthGetLoginIdResponseDto getLoginId(AuthGetLoginIdRequestDto requestDto) {
         User user = userRepository.findByUserNameAndPhoneNumber(requestDto.getUserName(), requestDto.getPhoneNumber())
                 .orElseThrow(() -> new NoSuchElementException("해당하는 유저가 없습니다"));
