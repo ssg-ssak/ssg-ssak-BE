@@ -9,12 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ssgssak.ssgpointuser.domain.store.application.StoreServiceImpl;
-import ssgssak.ssgpointuser.domain.store.dto.StoreGetRegionRequestDto;
-import ssgssak.ssgpointuser.domain.store.dto.StoreGetRegionResponseDto;
-import ssgssak.ssgpointuser.domain.store.dto.StoreRegisterFavoriteRequestDto;
-import ssgssak.ssgpointuser.domain.store.vo.StoreGetRegionInVo;
-import ssgssak.ssgpointuser.domain.store.vo.StoreGetRegionOutVo;
-import ssgssak.ssgpointuser.domain.store.vo.StoreRegisterFavoriteInVo;
+import ssgssak.ssgpointuser.domain.store.dto.*;
+import ssgssak.ssgpointuser.domain.store.vo.*;
 
 import java.security.Principal;
 
@@ -33,7 +29,12 @@ public class StoreController {
      */
 
     // 1. 매장 지도로 검색하기 : 지도에 표시되는 위-경도의 경곗값을 전달받아서, 그 사이에 존재하는 매장만 넘겨줌
-
+    @GetMapping("/map")
+    public ResponseEntity<StoreGetMapOutVo> getByMap(StoreGetMapInVo inVo) {
+        StoreGetMapResponseDto responseDto = storeService.getByMap(modelMapper.map(inVo, StoreGetMapRequestDto.class));
+        StoreGetMapOutVo outVo = modelMapper.map(responseDto, StoreGetMapOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
+    }
 
     // 2. 매장 지역으로 검색하기 : 제휴사,시,군(구)를 넘겨받아서, 그 사이에 존재하는 매장만 넘겨줌
     @GetMapping("/region")
