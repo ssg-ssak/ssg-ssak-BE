@@ -36,6 +36,7 @@ public class AffiliateCreditCardServiceImpl implements AffiliateCreditCardServic
 
     // 2. 모든 카드 조회
     @Override
+    @Transactional(readOnly = true)
     public AffiliateCreditCardGetResponseDto getCardList(String userUUID) {
         List<AffiliateCreditCard> cardList = affiliateCreditCardRepository.findAllByUserUUID(userUUID);
         List dataList = new ArrayList();

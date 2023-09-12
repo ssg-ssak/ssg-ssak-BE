@@ -37,6 +37,7 @@ public class AffiliatePointCardServiceImpl implements AffiliatePointCardService{
 
     // 2. 카드 조회 : uuid와 type에 해당하는 카드 조회
     @Override
+    @Transactional(readOnly = true)
     public AffiliatePointCardGetResponseDto getCard(AffiliatePointCardType type, String uuid) {
         AffiliatePointCard card = affiliatePointCardRepository.findByUserUUIDAndType(uuid, type)
                 .orElseThrow(()-> new NoSuchCardException("입력하신 정보에 해당하는 카드가 존재하지 않습니다"));

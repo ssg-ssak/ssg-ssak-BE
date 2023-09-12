@@ -44,6 +44,7 @@ public class StoreServiceImpl implements StoreService{
 
     // 2. 매장 지역으로 검색하기 : 제휴사,시,군(구)를 넘겨받아서, 그 사이에 존재하는 매장만 넘겨줌
     @Override
+    @Transactional(readOnly = true)
     public StoreGetRegionResponseDto getByRegion(StoreGetRegionRequestDto requestDto) {
         log.info("result"+requestDto);
         QStore store = QStore.store;
