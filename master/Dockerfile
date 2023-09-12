@@ -2,4 +2,4 @@
 # 이 파일에는 mysql 설정만 들어가있다
 FROM mysql:8
 
-ADD ./master/my.cnf /etc/mysql/my.cnf
+ADD ./my.cnf /etc/mysql/my.cnf

@@ -2,4 +2,4 @@
 
 FROM mysql:8
 
-ADD ./slave/my.cnf /etc/mysql/my.cnf
+ADD ./my.cnf /etc/mysql/my.cnf
