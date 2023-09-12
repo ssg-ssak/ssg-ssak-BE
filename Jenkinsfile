@@ -16,7 +16,8 @@ pipeline {
                     docker stop ssgpointapp || true
                     docker rm ssgpointapp || true
                     docker rmi ssgpoint_be || true
-                    docker build -t ssgpoint_be .
+                    docker build -t ssgpoint_be ./master
+                    docker build -t ssgpoint_be ./slave
                 '''
             }
         }
