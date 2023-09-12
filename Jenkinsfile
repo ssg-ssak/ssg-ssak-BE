@@ -23,7 +23,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'docker run -d —name ssgpointapp -p 8000:8000 ssgpoint_be_master'
+                sh 'docker run -d --name ssgpointapp -p 8000:8000 ssgpoint_be_master'
             }
         }
     }
