@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssgssak.ssgpointuser.domain.franchise.entity.Franchise;
 import ssgssak.ssgpointuser.domain.franchise.entity.QFranchise;
-import ssgssak.ssgpointuser.domain.store.dto.StoreGetRegionRequestDto;
-import ssgssak.ssgpointuser.domain.store.dto.StoreGetRegionResponseDto;
-import ssgssak.ssgpointuser.domain.store.dto.GetFranchiseDto;
-import ssgssak.ssgpointuser.domain.store.dto.GetRegionDto;
+import ssgssak.ssgpointuser.domain.store.dto.*;
+import ssgssak.ssgpointuser.domain.store.entity.FavoriteStore;
 import ssgssak.ssgpointuser.domain.store.entity.QStore;
 import ssgssak.ssgpointuser.domain.store.entity.Store;
 import ssgssak.ssgpointuser.domain.store.infrastructure.FavoriteStoreRepository;
@@ -22,6 +20,7 @@ import ssgssak.ssgpointuser.domain.store.infrastructure.StoreRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +43,7 @@ public class StoreServiceImpl implements StoreService{
 
 
     // 2. 매장 지역으로 검색하기 : 제휴사,시,군(구)를 넘겨받아서, 그 사이에 존재하는 매장만 넘겨줌
+    @Override
     public StoreGetRegionResponseDto getByRegion(StoreGetRegionRequestDto requestDto) {
         log.info("result"+requestDto);
         QStore store = QStore.store;
@@ -77,6 +77,16 @@ public class StoreServiceImpl implements StoreService{
 
 
     // 3. 단골매장 등록하기 : 매장 id값과 uuid를 넘겨받아서 진행, store_id가 아닌 store 전체를 저장하는것임
+    @Override
+    public void registerFavorite(StoreRegisterFavoriteRequestDto requestDto, String uuid) {
+        Store store = storeRepository.findById(requestDto.getStoreId())
+                .orElseThrow(()-> new NoSuchElementException());
+        FavoriteStore favoriteStore = FavoriteStore.builder()
+                .store(store)
+                .userUUID(uuid)
+                .build();
+        favoriteStoreRepository.save(favoriteStore);
+    }
 
 
     // BooleanExpression 설정

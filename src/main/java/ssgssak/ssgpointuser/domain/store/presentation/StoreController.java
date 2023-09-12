@@ -5,13 +5,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ssgssak.ssgpointuser.domain.store.application.StoreServiceImpl;
 import ssgssak.ssgpointuser.domain.store.dto.StoreGetRegionRequestDto;
 import ssgssak.ssgpointuser.domain.store.dto.StoreGetRegionResponseDto;
+import ssgssak.ssgpointuser.domain.store.dto.StoreRegisterFavoriteRequestDto;
 import ssgssak.ssgpointuser.domain.store.vo.StoreGetRegionInVo;
 import ssgssak.ssgpointuser.domain.store.vo.StoreGetRegionOutVo;
+import ssgssak.ssgpointuser.domain.store.vo.StoreRegisterFavoriteInVo;
+
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +44,11 @@ public class StoreController {
     }
 
     // 3. 단골매장 등록하기 : 매장 id값과 uuid를 넘겨받아서 진행, store_id가 아닌 store 전체를 저장하는것임
-
+    @PostMapping("favorite")
+    public void registerFavoriteStore(StoreRegisterFavoriteInVo inVo, Principal principal) {
+        StoreRegisterFavoriteRequestDto requestDto = modelMapper.map(inVo, StoreRegisterFavoriteRequestDto.class);
+        storeService.registerFavorite(requestDto, principal.getName());
+    }
 
 
 
