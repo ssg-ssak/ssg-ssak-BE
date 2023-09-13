@@ -15,7 +15,7 @@ pipeline {
                 sh '''
                     docker stop ssgpointapp || true
                     docker rm ssgpointapp || true
-                    docker rmi ssgpoint_be || true
+                    docker rmi ssgpoint_user || true
                     docker build -t ssgpoint-user .
                     echo ${MASTER_DB_URL}
                     echo $MASTER_DB_URL
