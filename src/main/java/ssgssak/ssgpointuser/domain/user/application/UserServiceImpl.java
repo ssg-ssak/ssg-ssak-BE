@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ssgssak.ssgpointuser.domain.user.dto.UserPhoneSearchResponseDto;
-import ssgssak.ssgpointuser.domain.user.dto.UserUpdateInfoDto;
-import ssgssak.ssgpointuser.domain.user.dto.UserUpdatePointPwDto;
-import ssgssak.ssgpointuser.domain.user.dto.UserUpdatePwDto;
+import ssgssak.ssgpointuser.domain.user.dto.*;
 import ssgssak.ssgpointuser.domain.user.entity.User;
 import ssgssak.ssgpointuser.domain.user.infrastructure.UserRepository;
 
@@ -18,7 +15,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
@@ -30,6 +27,7 @@ public class UserServiceImpl implements UserService{
      * 3. 유저 포인트 비밀번호 수정
      * 4. 유저 UUID로 조회
      * 5. 유저 휴대폰 번호로 조회
+     * 6. 유저 정보 조회
      */
 
     // 1. 유저 정보 수정
@@ -59,7 +57,7 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     public User getUserByUUID(String userUUID) {
         User user = userRepository.findUserByUserUUID(userUUID)
-                .orElseThrow(()->new NoSuchElementException());
+                .orElseThrow(() -> new NoSuchElementException());
         return user;
     }
 
@@ -68,11 +66,23 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     public UserPhoneSearchResponseDto searchPhoneNumber(String phoneNumber, String userName) {
         User user = userRepository.findByUserNameAndPhoneNumber(phoneNumber, userName)
-                .orElseThrow(()-> new NoSuchElementException("해당하는 유저가 존재하지 않습니다"));
+                .orElseThrow(() -> new NoSuchElementException("해당하는 유저가 존재하지 않습니다"));
         return UserPhoneSearchResponseDto.builder()
                 .userName(user.getUserName())
                 .userId(user.getUserId())
                 .receiverUUID(user.getUserUUID())
+                .build();
+    }
+
+    // 6. 유저 정보 조회
+    @Override
+    @Transactional(readOnly = true)
+    public UserGetResponseDto getUserInfo(String uuid) {
+        User user = userRepository.findUserByUserUUID(uuid)
+                .orElseThrow(() -> new NoSuchElementException("해당하는 유저가 존재하지 않습니다"));
+        return UserGetResponseDto.builder()
+                .userName(user.getUserName())
+                .userBarcodeNumber(user.getBarcodeNumber())
                 .build();
     }
 }

@@ -7,11 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssgssak.ssgpointuser.domain.user.application.UserServiceImpl;
-import ssgssak.ssgpointuser.domain.user.dto.UserPhoneSearchResponseDto;
-import ssgssak.ssgpointuser.domain.user.dto.UserUpdateInfoDto;
-import ssgssak.ssgpointuser.domain.user.dto.UserUpdatePwDto;
+import ssgssak.ssgpointuser.domain.user.dto.*;
 import ssgssak.ssgpointuser.domain.user.vo.*;
-import ssgssak.ssgpointuser.domain.user.dto.UserUpdatePointPwDto;
 
 import java.security.Principal;
 
@@ -31,13 +28,14 @@ public class UserController {
      * 2. 비밀번호 변경하기
      * 3. 포인트 비밀번호 변경하기
      * 4. 휴대폰 번호로 유저 조회
+     * 5. 유저 정보 조회
      */
 
     // 1. 회원정보 수정하기
     @PutMapping("/information")
     public void modifyUserInfo(@RequestBody UserUpdateInfoInVo userUpdateInfoInVo, Principal principal) {
         UserUpdateInfoDto updateInfoDto = modelMapper.map(userUpdateInfoInVo, UserUpdateInfoDto.class);
-        log.info("uuid " + principal.getName() );
+        log.info("uuid " + principal.getName());
         userService.updateUserInfo(updateInfoDto, principal.getName());
     }
 
@@ -61,6 +59,14 @@ public class UserController {
                                                                      @RequestParam String userName) {
         UserPhoneSearchResponseDto responseDto = userService.searchPhoneNumber(phoneNumber, userName);
         UserPhoneSearchingOutVo outVo = modelMapper.map(responseDto, UserPhoneSearchingOutVo.class);
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
+    }
+
+    // 5. 유저 정보 조회(이름, 바코드넘버)
+    @GetMapping("")
+    public ResponseEntity<UserGetOutVo> getUser(Principal principal) {
+        UserGetResponseDto responseDto = userService.getUserInfo(principal.getName());
+        UserGetOutVo outVo = modelMapper.map(responseDto, UserGetOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 }
