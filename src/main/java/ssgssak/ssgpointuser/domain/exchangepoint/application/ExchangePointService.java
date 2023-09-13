@@ -10,4 +10,7 @@ public interface ExchangePointService {
 
     // 2. 전환 적립
     void pointAddExchange(ExchangeAddDto addDto, String uuid);
+
+    // 3. 포인트id로 조회
+    ExchangePoint getExchangePoint(Long pointId);
 }
