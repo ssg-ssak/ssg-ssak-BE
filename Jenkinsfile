@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'docker run -d --name ssgpointapp -p 8000:8000 ssgpoint-user'
+                sh 'docker run -d --network root_net-ssg-mysql --name ssgpointapp -p 8000:8000 ssgpoint-user'
             }
         }
     }
