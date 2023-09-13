@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ssgssak.ssgpointuser.domain.store.application.StoreServiceImpl;
 import ssgssak.ssgpointuser.domain.store.dto.*;
+import ssgssak.ssgpointuser.domain.store.entity.Store;
 import ssgssak.ssgpointuser.domain.store.vo.*;
 
 import java.security.Principal;
@@ -26,6 +24,7 @@ public class StoreController {
      * 1. 매장 지도로 검색하기
      * 2. 매장 지역으로 검색하기
      * 3. 단골매장 등록하기
+     * 4. id로 매장 조회
      */
 
     // 1. 매장 지도로 검색하기 : 지도에 표시되는 위-경도의 경곗값을 전달받아서, 그 사이에 존재하는 매장만 넘겨줌
@@ -51,8 +50,11 @@ public class StoreController {
         storeService.registerFavorite(requestDto, principal.getName());
     }
 
-
-
-
-
+    // 4. id로 매장 조회
+    @GetMapping("/id")
+    public ResponseEntity<StoreGetIdOutVo> getById(@RequestParam Long storeId) {
+        Store store = storeService.getById(storeId);
+        StoreGetIdOutVo outVo = StoreGetIdOutVo.builder().store(store).build();
+        return new ResponseEntity<>(outVo, HttpStatus.OK);
+    }
 }

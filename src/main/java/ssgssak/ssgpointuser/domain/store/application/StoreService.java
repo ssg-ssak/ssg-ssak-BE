@@ -2,6 +2,7 @@ package ssgssak.ssgpointuser.domain.store.application;
 
 import org.springframework.transaction.annotation.Transactional;
 import ssgssak.ssgpointuser.domain.store.dto.*;
+import ssgssak.ssgpointuser.domain.store.entity.Store;
 
 public interface StoreService {
 
@@ -17,4 +18,7 @@ StoreGetRegionResponseDto getByRegion(StoreGetRegionRequestDto requestDto);
 
     // 3. 단골매장 등록하기 : 매장 id값과 uuid를 넘겨받아서 진행, store_id가 아닌 store 전체를 저장하는것임
     void registerFavorite(StoreRegisterFavoriteRequestDto requestDto, String uuid);
+
+    // 4. id로 매장 조회
+    Store getById(Long storeId);
 }

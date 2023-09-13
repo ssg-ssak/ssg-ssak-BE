@@ -37,6 +37,7 @@ public class StoreServiceImpl implements StoreService{
      * 1. 매장 지도로 검색하기
      * 2. 매장 지역으로 검색하기
      * 3. 단골매장 등록하기
+     * 4. id로 매장 조회
      */
 
     // 1. 매장 지도로 검색하기 : 지도에 표시되는 위-경도의 경곗값을 전달받아서, 그 사이에 존재하는 매장만 넘겨줌
@@ -102,6 +103,15 @@ public class StoreServiceImpl implements StoreService{
                 .userUUID(uuid)
                 .build();
         favoriteStoreRepository.save(favoriteStore);
+    }
+
+
+    // 4. id로 매장 조회
+    @Override
+    public Store getById(Long storeId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new NoSuchElementException());
+        return store;
     }
 
 
