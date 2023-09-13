@@ -17,4 +17,6 @@ public interface StorePointService {
     // 2. 가맹점(스토어)로 적립
     void addStorePoint(StorePointAddDto storeDto, String uuid);
 
+    // 3. id로 조회
+    StorePoint getStorePoint(Long storePointId);
 }

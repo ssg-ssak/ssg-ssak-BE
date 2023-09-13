@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/franchise").permitAll() // 모든 가맹점 정보 조회
                         // url이 특정지어지는 경우 -> HttpMethod를 적어줄 필요가 없다
                         .requestMatchers(
+                                "/api/v1/storepoint/point-id",
                                 "/api/v1/store/map",
                                 "/api/v1/store/region",
                                 "/api/v1/pointcard/offline/temp",   // 임시 카드 발급
