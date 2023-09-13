@@ -9,6 +9,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,11 @@ import java.util.function.Function;
 @Slf4j
 public class JwtTokenProvider {
 
-    private final Environment env; // application.yml에서 설정한 설정값
-
+//    private final Environment env; // application.yml에서 설정한 설정값
+    @Value("${jwt.secret-key}")
+    private String secretKey;
+    @Value("${jwt.expiration-time}")
+    private Long EXPIRATION_TIME;
     /**
      * TokenProvider
      * 1. 토큰에서 uuid 가져오기
@@ -73,7 +77,7 @@ public class JwtTokenProvider {
 
     // 4. 토큰 key 디코드 : env에 저장된 키로, 들어온 토큰을 파싱
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(env.getProperty("JWT.SECRET_KEY", String.class));
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);  //env.getProperty("JWT.SECRET_KEY", String.class)
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -101,7 +105,7 @@ public class JwtTokenProvider {
                 // 현재 시간을 발급시간으로 설정
                 .setIssuedAt(new java.util.Date(System.currentTimeMillis()))
                 // 만료일은, 현재시간 + env에 저장된 만료시간으로 설정
-                .setExpiration(new java.util.Date(System.currentTimeMillis() + env.getProperty("JWT.EXPIRATION_TIME", Long.class)))
+                .setExpiration(new java.util.Date(System.currentTimeMillis() + EXPIRATION_TIME)) //env.getProperty("JWT.EXPIRATION-TIME", Long.class)
                 // 마지막으로 env에 저장된 key로 해싱작업
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();

@@ -12,4 +12,4 @@ RUN ./gradlew bootJAR
 FROM openjdk:17-alpine
 COPY --from=builder build/libs/*.jar app.jar
 EXPOSE 8000
-ENTRYPOINT ["java","-jar", "/app.jar"]
+ENTRYPOINT ["java","-jar", "/app.jar","-Duser.timezone=Asia/Seoul", "-Dspring.profiles.active=prod"]
