@@ -29,7 +29,10 @@ public class ReceiptServiceImpl implements ReceiptService {
     // 1. 영수증 저장
     @Override
     public ReceiptSaveResponseDto saveReceipt(ReceiptSaveRequestDto requestDto) {
-        Receipt receipt = Receipt.builder().receiptNumber(requestDto.getReceiptNumber()).build();
+        Receipt receipt = Receipt.builder()
+                .storeId(requestDto.getStoreId())
+                .receiptNumber(requestDto.getReceiptNumber())
+                .build();
         receiptRepository.save(receipt);
         return ReceiptSaveResponseDto.builder().receiptId(receipt.getId()).build();
     }

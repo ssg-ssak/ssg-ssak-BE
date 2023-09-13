@@ -19,4 +19,7 @@ public class Receipt {
 
     @Column(nullable = false)
     private String receiptNumber;
+
+    @Column(nullable = false)
+    private Long storeId;
 }

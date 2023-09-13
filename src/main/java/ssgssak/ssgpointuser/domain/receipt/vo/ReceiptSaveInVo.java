@@ -5,4 +5,5 @@ import lombok.Getter;
 @Getter
 public class ReceiptSaveInVo {
     private String receiptNumber;
+    private Long storeId;
 }
