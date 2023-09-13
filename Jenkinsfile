@@ -19,8 +19,6 @@ pipeline {
                     docker build -t ssgpoint-user .
                     echo ${MASTER_DB_URL}
                     echo $MASTER_DB_URL
-                    echo {MASTER_DB_URL}
-                    echo MASTER_DB_URL
                 '''
             }
         }
