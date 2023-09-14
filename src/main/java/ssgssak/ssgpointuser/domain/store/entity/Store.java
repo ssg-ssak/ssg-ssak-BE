@@ -1,10 +1,7 @@
 package ssgssak.ssgpointuser.domain.store.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ssgssak.ssgpointuser.domain.franchise.entity.Franchise;
 
 @Entity
@@ -12,6 +9,7 @@ import ssgssak.ssgpointuser.domain.franchise.entity.Franchise;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Store {
 
     @Id
@@ -19,20 +17,20 @@ public class Store {
     private Long id;
 
 
-    @Column
+    @Column(nullable = false, name="store_name")
     private String storeName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Franchise franchise;
 
     // 주소를 시, 군(구), 도로명주소 로 나눔
-    @Column
+    @Column(nullable = false)
     private String city;
 
-    @Column
+    @Column(nullable = false)
     private String district;
 
-    @Column
+    @Column(nullable = false, name="road_address")
     private String roadAddress;
 
     // 실제 위치 정보 : 위도와 경도

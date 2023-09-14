@@ -1,16 +1,14 @@
 package ssgssak.ssgpointuser.domain.franchise.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Franchise {
 
     @Id
