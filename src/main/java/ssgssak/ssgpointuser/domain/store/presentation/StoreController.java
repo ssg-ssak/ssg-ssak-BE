@@ -53,8 +53,8 @@ public class StoreController {
     // 4. id로 매장 조회
     @GetMapping("/id")
     public ResponseEntity<StoreGetIdOutVo> getById(@RequestParam Long storeId) {
-        Store store = storeService.getById(storeId);
-        StoreGetIdOutVo outVo = StoreGetIdOutVo.builder().store(store).build();
+        GetStoreDto storeDto = storeService.getById(storeId);
+        StoreGetIdOutVo outVo = StoreGetIdOutVo.builder().storeDto(storeDto).build();
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
 }

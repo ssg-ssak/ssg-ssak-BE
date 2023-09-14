@@ -108,10 +108,12 @@ public class StoreServiceImpl implements StoreService{
 
     // 4. id로 매장 조회
     @Override
-    public Store getById(Long storeId) {
+    public GetStoreDto getById(Long storeId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new NoSuchElementException());
-        return store;
+        GetStoreDto storeDto = modelMapper.map(store, GetStoreDto.class);
+        storeDto.toBuilder().franchise_id(store.getFranchise().getId());
+        return storeDto;
     }
 
 
