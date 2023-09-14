@@ -112,7 +112,7 @@ public class StoreServiceImpl implements StoreService{
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new NoSuchElementException());
         GetStoreDto storeDto = modelMapper.map(store, GetStoreDto.class);
-        storeDto.toBuilder().franchise_id(store.getFranchise().getId());
+        storeDto = storeDto.toBuilder().storeId(storeId).franchise_id(store.getFranchise().getId()).build();
         return storeDto;
     }
 
