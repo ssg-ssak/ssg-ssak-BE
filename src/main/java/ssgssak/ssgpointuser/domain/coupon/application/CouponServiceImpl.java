@@ -75,7 +75,7 @@ public class CouponServiceImpl implements CouponService {
     // todo: 로직 생각해보기
     public String couponNumberGenerator() {
         Random random = new Random();
-        Long randomNumber = random.nextLong(Long.MAX_VALUE);
+        Long randomNumber = random.nextLong();
         return Long.toString(randomNumber);
     }
 
