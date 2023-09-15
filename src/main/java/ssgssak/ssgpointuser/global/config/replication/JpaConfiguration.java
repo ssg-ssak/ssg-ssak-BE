@@ -42,7 +42,14 @@ public class JpaConfiguration {
                 "ssgssak.ssgpointuser.domain.receipt.entity",
                 "ssgssak.ssgpointuser.domain.store.entity",
                 "ssgssak.ssgpointuser.domain.storepoint.entity",
-                "ssgssak.ssgpointuser.domain.user.entity");
+                "ssgssak.ssgpointuser.domain.user.entity",
+                "ssgssak.ssgpointuser.domain.club.entity",
+                "ssgssak.ssgpointuser.domain.coupon.entity",
+                "ssgssak.ssgpointuser.domain.drawingevent.entity",
+                "ssgssak.ssgpointuser.domain.eventlist.entity",
+                "ssgssak.ssgpointuser.domain.informationtypeevent.entity",
+                "ssgssak.ssgpointuser.domain.redirectionevent.entity"
+                );
         // JPA 벤더 어뎁터를 설정한다.
         entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter());
         // 영속성 유닛의 이름을 entityManager로 설정한다.
