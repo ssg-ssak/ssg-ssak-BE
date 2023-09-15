@@ -19,12 +19,13 @@ pipeline {
                     docker build -t ssgpoint-user .
                     echo ${MASTER_DB_URL}
                     echo $MASTER_DB_URL
+                    echo ${APP_PORT}
                 '''
             }
         }
         stage('Deploy') {
             steps {
-                sh 'docker run -e MASTER_DB_URL="${MASTER_DB_URL}" -e MASTER_DB_USERNAME="${MASTER_DB_USERNAME}" -e MASTER_DB_PASSWORD="${MASTER_DB_PASSWORD}" -e SLAVE_DB_URL="${SLAVE_DB_URL}" -e SLAVE_DB_USERNAME="${SLAVE_DB_USERNAME}" -e SLAVE_DB_PASSWORD="${SLAVE_DB_PASSWORD}" -e JWT_SECRET="${JWT_SECRET}" -d --network root_net-ssg-mysql --name ssgpointapp -p 80:80 ssgpoint-user'
+                sh 'docker run -e MASTER_DB_URL="${MASTER_DB_URL}" -e MASTER_DB_USERNAME="${MASTER_DB_USERNAME}" -e MASTER_DB_PASSWORD="${MASTER_DB_PASSWORD}" -e SLAVE_DB_URL="${SLAVE_DB_URL}" -e SLAVE_DB_USERNAME="${SLAVE_DB_USERNAME}" -e SLAVE_DB_PASSWORD="${SLAVE_DB_PASSWORD}" -e JWT_SECRET="${JWT_SECRET}" -d --network root_net-ssg-mysql --name ssgpointapp -p ${APP_PORT}:8000 ssgpoint-user'
             }
         }
     }
