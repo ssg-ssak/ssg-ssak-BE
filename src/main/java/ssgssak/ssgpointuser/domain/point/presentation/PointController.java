@@ -65,6 +65,7 @@ public class PointController {
     @GetMapping("/possible")
     public ResponseEntity<PointPossibleOutVo> searchPossiblePoint(Principal principal) {
         PointPossibleResponseDto responseDto = pointService.searchPossible(principal.getName());
+        log.info("현재 유저 포인트 : " +responseDto);
         PointPossibleOutVo outVo = modelMapper.map(responseDto, PointPossibleOutVo.class);
         return new ResponseEntity<>(outVo, HttpStatus.OK);
     }
